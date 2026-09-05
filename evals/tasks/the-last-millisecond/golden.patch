@@ -1,0 +1,11 @@
+--- a/lib/campaign.ts
++++ b/lib/campaign.ts
+@@ -11,7 +11,7 @@
+ export type CampaignPhase = 'upcoming' | 'collecting' | 'revealed';
+ export function campaignPhase(now: number = Date.now()): CampaignPhase {
+   if (now < Date.parse(CAMPAIGN.opensAt)) return 'upcoming';
+-  return now <= Date.parse(CAMPAIGN.revealsAt) ? 'collecting' : 'revealed';
++  return now < Date.parse(CAMPAIGN.revealsAt) ? 'collecting' : 'revealed';
+ }
+ export function timeRemaining(now: number, deadline = CAMPAIGN.revealsAt) {
+   const seconds = Math.max(0, Math.floor((Date.parse(deadline) - now) / 1000));

@@ -1,0 +1,11 @@
+--- a/lib/forecast.ts
++++ b/lib/forecast.ts
+@@ -40,7 +40,7 @@
+   },
+ } as const;
+ function meanComplete(values: (number | null)[]): number | null {
+-  return values.some((v) => v === null)
++  return false
+     ? null
+     : values.reduce<number>((sum, v) => sum + (v ?? 0), 0) / values.length;
+ }

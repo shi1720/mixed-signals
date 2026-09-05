@@ -1,0 +1,32 @@
+[
+  {
+    "id": "skip-is-not-neutral",
+    "category": "bug_fixing",
+    "title": "Skipped answers are becoming a forecast",
+    "problem": "A missing survey answer is currently treated as zero in the personal forecast. Fix complete-case scoring so an axis is null unless every question contributing to that axis is answered. Unrelated complete axes should still be available.",
+    "file": "lib/forecast.ts",
+    "old": "values.some((v) => v === null)",
+    "mutated": "false",
+    "test": "tests/unit/forecast.test.ts"
+  },
+  {
+    "id": "the-last-millisecond",
+    "category": "bug_fixing",
+    "title": "Collection remains open at the exact reveal instant",
+    "problem": "The campaign switches phase one millisecond too late. At the exact reveal instant the public state must be revealed. Keep opening-time semantics and the countdown unchanged.",
+    "file": "lib/campaign.ts",
+    "old": "now < Date.parse(CAMPAIGN.revealsAt)",
+    "mutated": "now <= Date.parse(CAMPAIGN.revealsAt)",
+    "test": "tests/unit/contracts.test.ts"
+  },
+  {
+    "id": "stop-recounting-hearts",
+    "category": "performance_optimization",
+    "title": "A frozen release still scans every report",
+    "problem": "The atomic snapshot insert discards conflicts correctly, but repeated calls still run the expensive aggregation. Avoid re-evaluating aggregate inputs after the snapshot exists while preserving the deadline gate, parameter binding, uniqueness and concurrent reveal safety. The regression test instruments SQLite ROUND calls rather than relying on flaky wall-clock timing.",
+    "file": "lib/server/aggregation.ts",
+    "old": "AND NOT EXISTS(SELECT 1 FROM snapshots WHERE campaign_id=?)",
+    "mutated": "AND ? IS NOT NULL",
+    "test": "tests/integration/api.test.ts"
+  }
+]

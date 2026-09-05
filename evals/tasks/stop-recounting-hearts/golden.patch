@@ -1,0 +1,11 @@
+--- a/lib/server/aggregation.ts
++++ b/lib/server/aggregation.ts
+@@ -23,7 +23,7 @@
+    'habitat',(SELECT habitat FROM submissions AS h WHERE h.campaign_id=? AND h.city_id=grouped_city.city_id GROUP BY habitat HAVING COUNT(*)>=? ORDER BY COUNT(*) DESC,habitat ASC LIMIT 1)
+   )) FROM (SELECT * FROM grouped ORDER BY city_id) AS grouped_city
+  ),'[]'),unixepoch()
+- WHERE unixepoch()>=? AND ? IS NOT NULL ON CONFLICT(campaign_id) DO NOTHING`;
++ WHERE unixepoch()>=? AND NOT EXISTS(SELECT 1 FROM snapshots WHERE campaign_id=?) ON CONFLICT(campaign_id) DO NOTHING`;
+ export function snapshotStatement(db: D1Database) {
+   const min = CAMPAIGN.minimumMetricSample;
+   return db

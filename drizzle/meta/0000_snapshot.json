@@ -1,0 +1,317 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "3479f30f-7320-4398-97e0-366c684554c7",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "rate_limits": {
+      "name": "rate_limits",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_rate_limits_expiry": {
+          "name": "idx_rate_limits_expiry",
+          "columns": [
+            "expires_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "app_secrets": {
+      "name": "app_secrets",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "snapshots": {
+      "name": "snapshots",
+      "columns": {
+        "campaign_id": {
+          "name": "campaign_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "payload": {
+          "name": "payload",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "submissions": {
+      "name": "submissions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "campaign_id": {
+          "name": "campaign_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "city_id": {
+          "name": "city_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "session_hash": {
+          "name": "session_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "idempotency_key": {
+          "name": "idempotency_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "payload_hash": {
+          "name": "payload_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "deletion_hash": {
+          "name": "deletion_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "spark": {
+          "name": "spark",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "follow_through": {
+          "name": "follow_through",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "affordability": {
+          "name": "affordability",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "clarity": {
+          "name": "clarity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "authenticity": {
+          "name": "authenticity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ghosting": {
+          "name": "ghosting",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "logistics": {
+          "name": "logistics",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "hope": {
+          "name": "hope",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "habitat": {
+          "name": "habitat",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "consent_version": {
+          "name": "consent_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "uq_submissions_campaign_session": {
+          "name": "uq_submissions_campaign_session",
+          "columns": [
+            "campaign_id",
+            "session_hash"
+          ],
+          "isUnique": true
+        },
+        "uq_submissions_campaign_idempotency": {
+          "name": "uq_submissions_campaign_idempotency",
+          "columns": [
+            "campaign_id",
+            "idempotency_key"
+          ],
+          "isUnique": true
+        },
+        "idx_submissions_campaign_city": {
+          "name": "idx_submissions_campaign_city",
+          "columns": [
+            "campaign_id",
+            "city_id"
+          ],
+          "isUnique": false
+        },
+        "idx_submissions_created_at": {
+          "name": "idx_submissions_created_at",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "ck_answer_0": {
+          "name": "ck_answer_0",
+          "value": "\"submissions\".\"spark\" IS NULL OR (typeof(\"submissions\".\"spark\") = 'integer' AND \"submissions\".\"spark\" BETWEEN 1 AND 5)"
+        },
+        "ck_answer_1": {
+          "name": "ck_answer_1",
+          "value": "\"submissions\".\"follow_through\" IS NULL OR (typeof(\"submissions\".\"follow_through\") = 'integer' AND \"submissions\".\"follow_through\" BETWEEN 1 AND 5)"
+        },
+        "ck_answer_2": {
+          "name": "ck_answer_2",
+          "value": "\"submissions\".\"affordability\" IS NULL OR (typeof(\"submissions\".\"affordability\") = 'integer' AND \"submissions\".\"affordability\" BETWEEN 1 AND 5)"
+        },
+        "ck_answer_3": {
+          "name": "ck_answer_3",
+          "value": "\"submissions\".\"clarity\" IS NULL OR (typeof(\"submissions\".\"clarity\") = 'integer' AND \"submissions\".\"clarity\" BETWEEN 1 AND 5)"
+        },
+        "ck_answer_4": {
+          "name": "ck_answer_4",
+          "value": "\"submissions\".\"authenticity\" IS NULL OR (typeof(\"submissions\".\"authenticity\") = 'integer' AND \"submissions\".\"authenticity\" BETWEEN 1 AND 5)"
+        },
+        "ck_answer_5": {
+          "name": "ck_answer_5",
+          "value": "\"submissions\".\"ghosting\" IS NULL OR (typeof(\"submissions\".\"ghosting\") = 'integer' AND \"submissions\".\"ghosting\" BETWEEN 1 AND 5)"
+        },
+        "ck_answer_6": {
+          "name": "ck_answer_6",
+          "value": "\"submissions\".\"logistics\" IS NULL OR (typeof(\"submissions\".\"logistics\") = 'integer' AND \"submissions\".\"logistics\" BETWEEN 1 AND 5)"
+        },
+        "ck_answer_7": {
+          "name": "ck_answer_7",
+          "value": "\"submissions\".\"hope\" IS NULL OR (typeof(\"submissions\".\"hope\") = 'integer' AND \"submissions\".\"hope\" BETWEEN 1 AND 5)"
+        },
+        "ck_habitat": {
+          "name": "ck_habitat",
+          "value": "\"submissions\".\"habitat\" IN ('apps','friends','irl','hobbies','none')"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}
