@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ArrowUpRight,
   ArrowRight,
-  Radio,
   Globe2,
   LockKeyhole,
   Heart,
@@ -25,6 +24,7 @@ import { Input } from '@/components/ui/input';
 import { Globe } from '@/components/atlas/globe';
 import { Survey } from '@/components/atlas/survey';
 import { InfoDialog } from '@/components/atlas/info';
+import { CityInsights } from '@/components/atlas/city-insights';
 import { ReceiptDialog } from '@/components/atlas/receipt';
 import { CAMPAIGN, type CampaignPhase, timeRemaining } from '@/lib/campaign';
 import { CITIES, CITY_BY_ID, searchCities } from '@/lib/cities';
@@ -82,7 +82,7 @@ export default function Home() {
       setStatusError(
         e instanceof Error
           ? e.message
-          : 'The signal tower is temporarily unavailable.',
+          : 'The survey service is temporarily unavailable.',
       );
     }
   }, []);
@@ -125,7 +125,7 @@ export default function Home() {
       setResultsError('');
     } catch (e) {
       setResultsError(
-        e instanceof Error ? e.message : 'The forecast is unavailable.',
+        e instanceof Error ? e.message : 'City reports are unavailable.',
       );
     } finally {
       setLoading(false);
@@ -247,27 +247,70 @@ export default function Home() {
                 : 'CONNECTING'}
         </span>
       </header>
-      <section className="intro">
-        <div>
+      <section className="intro clarity-intro">
+        <div className="intro-copy">
           <span className="eyebrow">
-            <Radio size={14} /> A PLANET-SIZED DATING EXPERIMENT
+            <Globe2 size={15} /> AN ANONYMOUS SURVEY OF DATING, CITY BY CITY
           </span>
           <h1>
-            It's not you.
+            What’s dating
             <br />
-            It's your <span>coordinates.</span>
+            actually like
+            <br />
+            <span>in your city?</span>
             <span className="title-spark" aria-hidden="true">
               ✳
             </span>
           </h1>
           <p>
-            Good dates. Bad dates. “What are we?” dates.
-            <br />
-            Help us map the world's dating weather.
+            Share what dating feels like, then compare anonymous city reports.
+            Good chemistry. Terrible commute. All useful context.
           </p>
+          <span className="intro-explainer">
+            Mixed Signals is a survey, not a dating app. One “signal” simply
+            means one person’s anonymous response.
+          </span>
         </div>
-        <div className="intro-right">
-          <span className="edition">LOVE IS IN THE AIR. SO IS CONFUSION.</span>
+        <div className="participation-card">
+          <span className="eyebrow">YOUR DATING DEBRIEF HAS A DAY JOB</span>
+          <h2>
+            A little perspective.
+            <br />
+            <em>A bigger picture.</em>
+          </h2>
+          <p>
+            {revealed
+              ? 'Collection is closed. Explore the combined experiences of contributors in the published city reports.'
+              : 'Answer up to 8 questions about connection, communication, and the practical side of dating.'}
+          </p>
+          <div
+            className={`participation-facts ${revealed ? 'collection-finished' : ''}`}
+          >
+            <span>
+              <Check size={15} /> About 2 minutes
+            </span>
+            <span>
+              <LockKeyhole size={15} /> No account or email
+            </span>
+            <span>
+              <Heart size={15} /> Adults 18+
+            </span>
+          </div>
+          <p className="participation-payoff">
+            {revealed ? (
+              <>
+                <b>Community reports are open.</b>
+                <br />
+                Collection is closed. Small samples stay private.
+              </>
+            ) : (
+              <>
+                <b>Your private summary: now.</b>
+                <br />
+                Community city reports: 12 September.
+              </>
+            )}
+          </p>
           <button
             className="button primary"
             disabled={!hydrated}
@@ -280,21 +323,106 @@ export default function Home() {
             }
           >
             {revealed
-              ? 'Explore the reveal'
+              ? 'Explore community results'
               : receipt
-                ? 'Your signal is in'
-                : 'Drop your signal'}{' '}
-            {receipt && !revealed ? (
-              <Check size={19} />
-            ) : (
-              <ArrowUpRight size={19} />
-            )}
+                ? 'View my saved report'
+                : 'Take the 2-minute survey'}
+            <ArrowUpRight size={20} />
           </button>
-          <p>
-            {receipt
-              ? 'Thank you for adding to the atmosphere.'
-              : '90 seconds. Anonymous. Mildly therapeutic.'}
-          </p>
+          <button
+            className="participation-secondary"
+            onClick={() => {
+              setMode('preview');
+              document.getElementById('atlas')?.scrollIntoView({
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)')
+                  .matches
+                  ? 'instant'
+                  : 'smooth',
+              });
+            }}
+          >
+            Explore example results <ArrowRight size={15} />
+          </button>
+          <span className="participation-note">
+            {revealed
+              ? 'These responses describe contributors, not everyone in a city.'
+              : 'Answer at least 4. Skip anything you can’t judge.'}
+          </span>
+        </div>
+      </section>
+      <section
+        className="experiment-journey"
+        aria-label="What you contribute and what you get"
+      >
+        <div className="journey-step">
+          <span className="journey-number">01</span>
+          <div>
+            <span className="eyebrow">YOU CONTRIBUTE</span>
+            <h2>Your experience, anonymously.</h2>
+            <p>
+              Think about dating in one city over the last six months. No names,
+              profiles, or exact locations.
+            </p>
+          </div>
+        </div>
+        <div className="journey-step">
+          <span className="journey-number">02</span>
+          <div>
+            <span className="eyebrow">YOU GET · IMMEDIATELY</span>
+            <h2>A private answer summary.</h2>
+            <p>
+              See your scores for the question groups you complete. Keep a
+              private receipt to delete your response.
+            </p>
+          </div>
+        </div>
+        <div className="journey-step reveal-journey">
+          <span className="journey-number">03</span>
+          <div>
+            <span className="eyebrow">
+              EVERYONE GETS · {revealed ? 'OPEN NOW' : '12 SEPTEMBER'}
+            </span>
+            <h2>City reports to compare.</h2>
+            <p>
+              See patterns in connection, mixed messages, and date hassles. Each
+              score needs 10 complete responses.
+            </p>
+            {!revealed && (
+              <div
+                className="compact-countdown"
+                aria-label={
+                  remaining
+                    ? `${remaining.days} days, ${remaining.hours} hours and ${remaining.minutes} minutes until reveal`
+                    : 'Connecting to the shared countdown'
+                }
+              >
+                {remaining ? (
+                  <>
+                    <b>
+                      {remaining.days}
+                      <small>days</small>
+                    </b>
+                    <span>:</span>
+                    <b>
+                      {String(remaining.hours).padStart(2, '0')}
+                      <small>hrs</small>
+                    </b>
+                    <span>:</span>
+                    <b>
+                      {String(remaining.minutes).padStart(2, '0')}
+                      <small>min</small>
+                    </b>
+                  </>
+                ) : (
+                  'Connecting…'
+                )}
+              </div>
+            )}
+            <span className="journey-date">{revealText}</span>
+            <a href="/api/reminder" className="calendar-link">
+              <CalendarPlus size={15} /> Remind me at the reveal
+            </a>
+          </div>
         </div>
       </section>
       {statusError && (
@@ -315,20 +443,20 @@ export default function Home() {
         >
           <TabsList className="mode-tabs" aria-label="Atlas data source">
             <TabsTrigger value="preview" disabled={!hydrated}>
-              <Globe2 size={14} /> Preview atlas
+              <Globe2 size={14} /> Example results
             </TabsTrigger>
             <TabsTrigger value="live" disabled={!hydrated}>
               {revealed ? <Sparkles size={14} /> : <LockKeyhole size={14} />}{' '}
-              {revealed ? 'The real reveal' : 'Live experiment'}
+              {revealed ? 'Community results' : 'Community results'}
             </TabsTrigger>
           </TabsList>
         </Tabs>
         <span className="toolbar-note">
           {demo
-            ? 'A sneak peek with made-up data. Real feelings arrive at the reveal.'
+            ? 'You’re exploring invented example data. Your survey answers build the community results.'
             : revealed
-              ? 'The season is sealed. These are the contributors’ collective signals.'
-              : 'We’re collecting real signals. All city results stay sealed until the reveal.'}
+              ? 'Collection is closed. These are frozen summaries of voluntary survey responses.'
+              : 'Real responses are being collected. Community results open together on 12 September.'}
         </span>
         <button
           className="icon-button"
@@ -346,11 +474,11 @@ export default function Home() {
         <div className="map-stage">
           <div className="map-topline">
             <span>
-              <Globe2 size={15} /> THE DATING ATMOSPHERE
+              <Globe2 size={15} /> EXPLORE DATING BY CITY
             </span>
             <span className={`demo-badge ${demo ? '' : 'live-badge'}`}>
               {demo
-                ? 'ILLUSTRATIVE PREVIEW'
+                ? 'EXAMPLE · INVENTED DATA'
                 : revealed
                   ? 'REAL · SEASON 001'
                   : 'SEALED UNTIL 12 SEP'}
@@ -361,7 +489,10 @@ export default function Home() {
               value={metric}
               onValueChange={(v) => setMetric(v as MetricKey)}
             >
-              <TabsList aria-label="Weather metric" className="map-tabs">
+              <TabsList
+                aria-label="Dating experience score"
+                className="map-tabs"
+              >
                 {(
                   Object.entries(METRICS) as [
                     MetricKey,
@@ -375,6 +506,10 @@ export default function Home() {
                 ))}
               </TabsList>
             </Tabs>
+            <p className="map-metric-definition">
+              {METRICS[metric].direction}. Scores are out of 100, not
+              percentages.
+            </p>
           </div>
           <Globe
             results={data}
@@ -386,9 +521,9 @@ export default function Home() {
           {activeResult && activeCity && (
             <div className="map-city-card" key={activeCity.id}>
               <div className="map-city-heading">
-                <span>{demo ? 'SAMPLE FORECAST' : 'CITY FORECAST'}</span>
+                <span>{demo ? 'EXAMPLE CITY' : 'CITY REPORT'}</span>
                 <button
-                  aria-label="Close city forecast"
+                  aria-label="Close selected city"
                   onClick={() => setSelected(null)}
                 >
                   <X size={15} />
@@ -399,26 +534,14 @@ export default function Home() {
                 {activeCity.name}
                 <ArrowUpRight size={17} />
               </h3>
-              <p>{activeResult.forecast}</p>
-              <div className="active-score">
-                <strong>{activeResult[metric].value ?? '·'}</strong>
-                <span>
-                  {METRICS[metric].label}
-                  <small>
-                    {activeResult[metric].value === null
-                      ? 'Not enough complete signals'
-                      : `${activeResult[metric].n} ${demo ? 'sample' : 'complete'} signals`}
-                  </small>
-                </span>
-              </div>
-              <div className="score-bar">
-                <span
-                  style={{
-                    width: `${activeResult[metric].value ?? 0}%`,
-                    background: METRICS[metric].color,
-                  }}
-                />
-              </div>
+              <p>
+                {demo
+                  ? 'Invented example, not real city data.'
+                  : `${activeResult.n} anonymous responses. See the full city report.`}
+              </p>
+              <p className="map-result-hint">
+                Read all three scores in the City report panel.
+              </p>
               <button className="map-share" onClick={share}>
                 <Share2 size={13} /> Share this view
               </button>
@@ -427,9 +550,9 @@ export default function Home() {
           {selected && activeCity && !activeResult && (demo || revealed) && (
             <div className="map-city-card">
               <div className="map-city-heading">
-                <span>{demo ? 'PREVIEW ATLAS' : 'CITY FORECAST'}</span>
+                <span>{demo ? 'EXAMPLE RESULTS' : 'CITY REPORT'}</span>
                 <button
-                  aria-label="Close city forecast"
+                  aria-label="Close selected city"
                   onClick={() => setSelected(null)}
                 >
                   <X size={15} />
@@ -438,8 +561,8 @@ export default function Home() {
               <h3>{activeCity.name}</h3>
               <p>
                 {demo
-                  ? 'This city has no illustrative fixture. It is available in the real survey.'
-                  : 'No publishable forecast for this city. Small samples stay private.'}
+                  ? 'This city has no invented example. You can still answer the survey for it.'
+                  : 'This city did not meet the minimum response count. Small samples stay private.'}
               </p>
             </div>
           )}
@@ -449,18 +572,19 @@ export default function Home() {
                 <LockKeyhole size={23} />
               </span>
               <h3>
-                Some things need
-                <br />a little time.
+                Community results
+                <br />
+                open on 12 September.
               </h3>
               <p>
-                Real city signals unlock together on {revealText}.<br />
-                No peeking. Not even for your ex.
+                Compare city survey summaries from {revealText}.<br />
+                Until then, all the numbers in Example results are invented.
               </p>
               <button
                 className="button primary"
                 onClick={() => setSurveyOpen(true)}
               >
-                Add your anonymous signal <ArrowUpRight size={17} />
+                Take the survey <ArrowUpRight size={17} />
               </button>
             </div>
           )}
@@ -475,7 +599,7 @@ export default function Home() {
                 </span>
                 <h3>A quiet first season.</h3>
                 <p>
-                  No city reached the 10-signal threshold.
+                  No city reached the minimum of 10 responses.
                   <br />
                   Your privacy matters more than filling a map.
                 </p>
@@ -489,12 +613,12 @@ export default function Home() {
             )}
           {!demo && loading && (
             <output className="map-loading">
-              <LoaderCircle className="spinner" /> Reading the atmosphere…
+              <LoaderCircle className="spinner" /> Loading city reports…
             </output>
           )}
           {!demo && resultsError && (
             <div className="sealed-overlay">
-              <h3>The forecast is delayed.</h3>
+              <h3>City reports could not load.</h3>
               <p>{resultsError}</p>
               <button className="button primary" onClick={loadResults}>
                 Try again
@@ -515,107 +639,29 @@ export default function Home() {
             <span>01 / PLANET EARTH</span>
           </div>
         </div>
-        <aside className="reveal-card">
-          <span className="eyebrow">
-            {revealed ? 'THE GREAT REVEAL' : 'THE GREAT REVEAL · 12 SEP'}
-          </span>
-          <h2>
-            {revealed ? (
-              <>
-                The atmosphere
-                <br />
-                is out in the open.
-              </>
-            ) : (
-              <>
-                A week of secrets.
-                <br />
-                One big reveal.
-              </>
-            )}
-          </h2>
-          <p>
-            {revealed
-              ? 'Explore the anonymous city forecasts. One collective snapshot, frozen in time. The group chat has entered its data era.'
-              : 'Send an anonymous signal from your city. Come back at the shared reveal to see what the planet is really feeling.'}
-          </p>
-          {!revealed ? (
-            <>
-              <div
-                className="countdown"
-                aria-label={
-                  remaining
-                    ? `${remaining.days} days, ${remaining.hours} hours and ${remaining.minutes} minutes until reveal`
-                    : 'Connecting to the shared countdown'
-                }
-              >
-                {(['days', 'hours', 'minutes'] as const).map((unit, i) => (
-                  <div className="countdown-unit" key={unit}>
-                    {i > 0 && <span className="countdown-colon">:</span>}
-                    <span>
-                      {remaining
-                        ? String(remaining[unit]).padStart(2, '0')
-                        : '··'}
-                    </span>
-                    <small>
-                      {unit === 'minutes' ? 'MINS' : unit.toUpperCase()}
-                    </small>
-                  </div>
-                ))}
-              </div>
-              <span className="reveal-date">
-                {revealText} · your local time
-              </span>
-            </>
-          ) : (
-            <div className="reveal-complete">
-              <Sparkles size={30} />
-              <span>Season 001 is open.</span>
-            </div>
-          )}
-          <div className="card-rule" />
-          <span className="lock-note">
-            <ShieldIcon />
-            {revealed
-              ? 'Small samples stay private. Always.'
-              : 'City results need at least 10 signals.'}
-          </span>
-          <button
-            className="button dark"
-            disabled={!hydrated}
-            onClick={() =>
-              revealed
-                ? setMode('live')
-                : receipt
-                  ? setReceiptOpen(true)
-                  : setSurveyOpen(true)
-            }
-          >
-            {revealed
-              ? 'Read the atmosphere'
-              : receipt
-                ? 'View your private receipt'
-                : 'Count me in'}
-            <ArrowRight size={18} />
-          </button>
-          <a className="calendar-link" href="/api/reminder">
-            <CalendarPlus size={14} /> Add the reveal to my calendar
-          </a>
-          <span className="tiny-note">
-            No names. No exes. Just city-level signals.
-          </span>
-        </aside>
+        <CityInsights
+          data={data}
+          selected={selected}
+          demo={demo}
+          revealed={revealed}
+          onSelect={selectCity}
+          onSurvey={() =>
+            receipt ? setReceiptOpen(true) : setSurveyOpen(true)
+          }
+        />
       </section>
       <section className="city-section" aria-labelledby="city-section-title">
         <div className="section-top">
           <div>
             <span className="eyebrow">
-              {demo ? 'A TASTE OF THE ATMOSPHERE' : 'THE CITY FIELD GUIDE'}
+              {demo
+                ? 'EXAMPLE CITY REPORTS · INVENTED DATA'
+                : 'COMMUNITY CITY REPORTS'}
             </span>
             <h2 id="city-section-title">
               {demo
-                ? 'Different cities. Same “you up?”'
-                : 'Every city has a story.'}
+                ? 'Different cities. Different dating stories.'
+                : 'What contributors told us.'}
             </h2>
           </div>
           <button
@@ -632,7 +678,7 @@ export default function Home() {
                 <Search size={17} />
                 <Input
                   placeholder="Find a city or country"
-                  aria-label="Search city forecasts"
+                  aria-label="Search city reports"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   className="city-search"
@@ -640,7 +686,7 @@ export default function Home() {
               </div>
               <div
                 className="region-filters"
-                aria-label="Filter forecasts by region"
+                aria-label="Filter city reports by region"
               >
                 {[
                   'All regions',
@@ -701,7 +747,7 @@ export default function Home() {
                       <div className="city-tile-top">
                         <span className="country-code">{c.code}</span>
                         <span className="sample-label">
-                          {demo ? 'ILLUSTRATIVE' : `${r.n} SIGNALS`}
+                          {demo ? 'ILLUSTRATIVE' : `${r.n} RESPONSES`}
                         </span>
                         <ArrowUpRight size={17} />
                       </div>
@@ -713,7 +759,7 @@ export default function Home() {
                           {METRICS[metric].label}
                         </span>
                         <strong>
-                          {value ?? 'Sealed'}
+                          {value ?? 'Hidden'}
                           {value !== null && <small>/100</small>}
                         </strong>
                       </div>
@@ -727,12 +773,12 @@ export default function Home() {
                       </div>
                       <span className="tile-footnote">
                         {habitat
-                          ? `${habitat.emoji} ${habitat.label} territory`
-                          : 'City-level perspective'}{' '}
+                          ? `${habitat.emoji} Most selected: ${habitat.label}`
+                          : 'Meeting route not published'}{' '}
                         ·{' '}
                         {demo
                           ? 'Made-up data'
-                          : `${r[metric].n || '<10'} complete reports`}
+                          : `${r[metric].n || '<10'} complete responses`}
                       </span>
                     </button>
                   );
@@ -745,7 +791,7 @@ export default function Home() {
                   {query
                     ? 'No forecast at those coordinates.'
                     : !demo
-                      ? 'Not enough signals to publish yet.'
+                      ? 'Not enough complete responses to publish.'
                       : 'No cities match this filter.'}
                 </h3>
                 <p>
@@ -788,17 +834,17 @@ export default function Home() {
           <div className="collection-note">
             <LockKeyhole size={25} />
             <div>
-              <h3>The cities are keeping their secrets.</h3>
+              <h3>Your answers are private. City summaries come later.</h3>
               <p>
-                While the signals roll in, explore a clearly labeled preview of
-                how the atlas will work.
+                Try the invented example reports to see exactly how connection,
+                mixed messages, and date hassles will be compared.
               </p>
             </div>
             <button
               className="button outline"
               onClick={() => setMode('preview')}
             >
-              See the preview <ArrowRight size={16} />
+              Explore example results <ArrowRight size={16} />
             </button>
           </div>
         )}
@@ -811,44 +857,33 @@ export default function Home() {
         <span>HUMAN FEELINGS. QUESTIONABLE FORECASTS.</span>
         <span>✳</span>
       </div>
-      <section id="how-it-works" className="how-section">
+      <section id="how-it-works" className="meaning-section">
         <div>
-          <span className="eyebrow">HOW THIS LITTLE EXPERIMENT WORKS</span>
+          <span className="eyebrow">USEFUL CONTEXT. NO CRYSTAL BALL.</span>
           <h2>
-            Your love life.
+            What can a city
             <br />
-            For <em>questionable</em> science.
+            <em>report tell you?</em>
           </h2>
         </div>
-        <div className="how-step">
-          <span>
-            01 <Radio />
-          </span>
-          <h3>Send a signal.</h3>
+        <div>
+          <h3>Notice the tradeoffs.</h3>
           <p>
-            Your city, your experience, a few oddly specific questions. No
-            account required. Adults 18+ only.
+            A city can feel great for connection and tough on the calendar. Read
+            the three scores together to understand the experiences people
+            shared.
           </p>
         </div>
-        <div className="how-step">
-          <span>
-            02 <LockKeyhole />
-          </span>
-          <h3>Let it simmer.</h3>
+        <div>
+          <h3>Start better conversations.</h3>
           <p>
-            One shared seven-day countdown, ending 12 September. Your personal
-            forecast arrives straight away.
+            Compare the same scores across cities, with each sample count
+            visible. These volunteers don’t represent everyone, and a score
+            can’t predict your next date.
           </p>
-        </div>
-        <div className="how-step">
-          <span>
-            03 <Sparkles />
-          </span>
-          <h3>Read the atmosphere.</h3>
-          <p>
-            Explore the world's dating weather. Finally, your group chat has a
-            map. Only cities with enough signals appear.
-          </p>
+          <button className="text-link" onClick={() => setInfo('methodology')}>
+            Read how scoring works <ArrowUpRight size={14} />
+          </button>
         </div>
       </section>
       <div className="closing-strip">
@@ -865,7 +900,7 @@ export default function Home() {
           disabled={!hydrated}
           onClick={() => (revealed ? setMode('live') : setSurveyOpen(true))}
         >
-          {revealed ? 'Explore the reveal' : 'Put your city on the map'}
+          {revealed ? 'Explore community results' : 'Take the survey'}
           <ArrowUpRight size={18} />
         </button>
       </div>
@@ -880,7 +915,9 @@ export default function Home() {
           A love letter to collective oversharing. <Heart size={14} />
         </span>
         <div className="footer-links">
-          <button onClick={() => setReceiptOpen(true)}>Your signal</button>
+          <button onClick={() => setReceiptOpen(true)}>
+            My report & deletion
+          </button>
           <button onClick={() => setInfo('privacy')}>Data promise</button>
           <a
             href="https://github.com/shi1720/mixed-signals"
@@ -913,7 +950,4 @@ export default function Home() {
       <Toaster position="bottom-right" />
     </main>
   );
-}
-function ShieldIcon() {
-  return <LockKeyhole size={15} />;
 }

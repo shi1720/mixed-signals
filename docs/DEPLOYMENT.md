@@ -8,6 +8,14 @@ The reference site is [Mixed Signals](https://mixed-signals-atlas.sg127977958.ch
 
 No OpenAI API key, map token, Firestore project, email account, or other application secret is required. The rate-limit salt is generated once inside the database. It never reaches the browser.
 
+## What the reference-site owner needs to do
+
+**No hosting or database setup is required.** The published reference site already has its Worker, durable D1 database and migrations connected. There is no Firestore key, email-provider account or map API to configure.
+
+To obtain useful community results, share the public survey with adults who have dating experience in the supported cities. Invite varied experiences, not only dramatic stories. Do not seed invented responses. Each city needs at least 10 submissions, and each score needs 10 complete answer groups, so a city report is not guaranteed.
+
+The reference campaign reveals on **12 September 2026 at 13:00 UTC (6:30 PM IST)**. Visitors can download a calendar reminder; the site does not collect email or send reminder emails. Custom domains or moving hosting to your own account are optional. After the fixed season closes, follow “Starting a new season” before collecting another round.
+
 ## Local development
 
 ```bash

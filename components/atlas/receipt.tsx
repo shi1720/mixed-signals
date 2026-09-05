@@ -24,6 +24,7 @@ import {
   receiptSchema,
   storeReceipt,
 } from '@/lib/client';
+import { PersonalSummary } from './personal-summary';
 import { CITY_BY_ID } from '@/lib/cities';
 export function ReceiptDialog({
   open,
@@ -86,22 +87,18 @@ export function ReceiptDialog({
         }}
       >
         <DialogContent className="receipt-dialog">
-          <DialogTitle className="survey-title">
-            Your little signal.
-          </DialogTitle>
+          <DialogTitle className="survey-title">Your saved report.</DialogTitle>
           <DialogDescription className="survey-description">
-            A private receipt for your contribution to the atmosphere.
+            Your answer summary and private deletion receipt. Keep this receipt
+            to withdraw your response.
           </DialogDescription>
           {receipt ? (
             <>
-              <div className="forecast-ticket">
-                <span>
-                  {CITY_BY_ID.get(receipt.cityId)?.name.toUpperCase() ??
-                    receipt.cityId}
-                </span>
-                <h3>{receipt.label}</h3>
-                <p>Your personal forecast, based only on your answers.</p>
-              </div>
+              <span className="receipt-city-label">
+                {CITY_BY_ID.get(receipt.cityId)?.name ?? receipt.cityId} · YOUR
+                RESPONSE
+              </span>
+              <PersonalSummary receipt={receipt} />
               <a href="/api/reminder" className="button primary">
                 <CalendarPlus size={18} /> Add reveal to calendar
               </a>
@@ -203,7 +200,7 @@ export function ReceiptDialog({
           {error && confirm && <p role="alert">{error}</p>}
           <AlertDialogFooter>
             <AlertDialogCancel disabled={busy}>
-              Keep my signal
+              Keep my report
             </AlertDialogCancel>
             <AlertDialogAction
               disabled={busy}

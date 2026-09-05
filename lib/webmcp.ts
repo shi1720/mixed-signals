@@ -53,9 +53,9 @@ export function registerAtlasTools(actions: {
     },
     {
       name: 'set_atlas_metric',
-      title: 'Change the weather reading',
+      title: 'Change the dating score',
       description:
-        'Switch the visible globe and city list to chemistry, fog, or friction.',
+        'Switch the globe and city list: chemistry means Connection, fog means Mixed messages, and friction means Date hassles.',
       inputSchema: {
         type: 'object',
         properties: {

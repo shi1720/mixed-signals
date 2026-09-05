@@ -1,6 +1,6 @@
 --- a/lib/forecast.ts
 +++ b/lib/forecast.ts
-@@ -40,7 +40,7 @@
+@@ -43,7 +43,7 @@
    },
  } as const;
  function meanComplete(values: (number | null)[]): number | null {

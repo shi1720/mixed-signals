@@ -24,10 +24,10 @@ Node 22.13+ is required for the `node:sqlite` test adapter. Python 3.10+ is requ
 | 27 SQL integration tests | Actual SQLite statements, uniqueness under concurrent requests, idempotency, independent SQL deadline rejection, suppression, immutable snapshots, deletion ordering, retention and bounded request parsing |
 | 300 generated cases within one domain test | Null answers never become scores; complete values remain bounded |
 | 12 Python tests | Streaming CSV validation, private-column rejection, sample thresholds, malformed input and explicit preview handling |
-| 20 browser cases | Ten scenarios in desktop Chromium and an iPhone-sized Chromium viewport, exercising the compiled Worker with a real local D1 emulator |
+| 28 browser cases | Fourteen scenarios in desktop Chromium and an iPhone-sized Chromium viewport, exercising the compiled Worker with a real local D1 emulator |
 | Three evaluation tasks | Each deliberately broken baseline fails its regression suite; applying its actual golden patch restores passing behavior |
 
-Browser coverage includes search, filters, city details, share state, sealed results, calendar downloads, survey validation, real submissions, reload persistence, transient failures, lost responses, immutable retries after editing, cross-browser receipt recovery, confirmed withdrawal, unmatched receipt handling, keyboard operation, reduced motion, layout overflow, 404s and automated WCAG checks on the atlas and survey.
+Browser coverage includes search, filters, city details, share state, sealed results, calendar downloads, survey validation, real submissions, reload persistence, transient failures, lost responses, immutable retries after editing, cross-browser receipt recovery, confirmed withdrawal, unmatched receipt handling, keyboard operation, reduced motion, layout overflow, 404s and automated WCAG checks on the atlas and survey. Additional cases cover full first-screen CTA visibility, comparable city scores, partial answer summaries, old receipts, truthful post-reveal suppression, and repainting the globe after an offscreen resize.
 
 ## Disposable browser environment
 
@@ -56,3 +56,5 @@ Independent agents reviewed the product and security boundaries. Their feedback 
 - The Dockerfile is supplied for reproducibility; the reported local checks run directly through npm and Python.
 - Evaluation tasks are public, deliberately seeded calibration exercises. Their test suites are not hidden and their runner is not a sandbox for hostile agent code.
 - Provider backups and logs have their own retention settings. Application deletion does not prove deletion from every infrastructure backup.
+
+The post-reveal presentation case stubs only status/results at the browser boundary. The separate SQL integration suite verifies actual deadline, suppression and immutable-release behavior. The other collection flows perform real writes against the isolated D1 emulator.

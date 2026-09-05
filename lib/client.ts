@@ -71,6 +71,14 @@ export const receiptSchema = z
     campaignId: z.literal(CAMPAIGN.id),
     label: z.string().max(120),
     revealsAt: z.iso.datetime(),
+    scores: z
+      .object({
+        chemistry: z.number().min(0).max(100).nullable(),
+        fog: z.number().min(0).max(100).nullable(),
+        friction: z.number().min(0).max(100).nullable(),
+      })
+      .strict()
+      .optional(),
   })
   .strict();
 export type Receipt = z.infer<typeof receiptSchema>;

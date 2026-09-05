@@ -31,8 +31,8 @@ export function InfoDialog({
           {privacy
             ? 'Our data promise.'
             : method
-              ? 'Extremely unofficial.\nEntirely transparent.'
-              : 'A little oversharing.\nA bigger picture.'}
+              ? 'What the scores mean.'
+              : 'A city dating survey.\nWith a sense of humor.'}
         </DialogTitle>
         <DialogDescription className="survey-description">
           {privacy
@@ -46,10 +46,10 @@ export function InfoDialog({
             <>
               <h3>What leaves your device</h3>
               <p>
-                Your chosen city, eight optional 1–5 ratings, a meet-cute
-                category, consent confirmations, and an anonymous browser
-                identifier. We never ask for gender, orientation, names, photos,
-                email, or your current location.
+                Your chosen city, eight optional 1–5 ratings, a category for
+                where you meet people, consent confirmations, and an anonymous
+                browser identifier. We never ask for gender, orientation, names,
+                photos, email, or your current location.
               </p>
               <h3>Anonymous to everyone else</h3>
               <p>
@@ -98,44 +98,47 @@ export function InfoDialog({
                 that deadline. The countdown never restarts when you refresh.
                 Results unlock automatically.
               </p>
-              <h3>Three readings, no city leaderboard</h3>
+              <h3>Three scores, no city leaderboard</h3>
               <ul>
                 <li>
-                  <b>Chemistry:</b> the average of finding a connection, feeling
-                  like yourself, and recommending dating in your city.
+                  <b>Connection:</b> the average of finding a connection,
+                  feeling like yourself, and recommending dating in your city.
                 </li>
                 <li>
-                  <b>Mixed signals:</b> unclear intentions and conversations
+                  <b>Mixed messages:</b> unclear intentions and conversations
                   disappearing.
                 </li>
                 <li>
-                  <b>Date friction:</b> plans falling through, affordability
+                  <b>Date hassles:</b> plans falling through, affordability
                   barriers, and travel difficulties.
                 </li>
               </ul>
               <p>
-                Answers map from 1–5 to 0–100. Negative questions are reversed
-                where needed. We calculate each person's metric only when all
-                its questions are answered, average those scores, then round to
-                the nearest five. “Skip” is missing data, never a neutral
-                answer.
+                Answers map from 1–5 to 0–100. We orient each component so a
+                higher score means more of the named quality: more positive
+                connection experiences, more confusion, or more practical
+                barriers. These are scores, not percentages of people. We
+                calculate each person's metric only when all its questions are
+                answered, average those scores, then round to the nearest five.
+                “Skip” is missing data, never a neutral answer.
               </p>
               <h3>How a forecast gets its name</h3>
               <p>
-                Chemistry at least 60 and mixed signals below 50 gives “Mostly
+                Connection at least 60 and mixed messages below 50 gives “Mostly
                 butterflies.” Both at least those thresholds gives “Hot with a
-                chance of ‘what are we?’.” Chemistry below 60 and friction at
-                least 60 gives “Excellent couch weather.” Otherwise, “Scattered
-                possibilities.” A missing metric means we keep reading the
-                atmosphere.
+                chance of ‘what are we?’.” Connection below 60 and date hassles
+                at least 60 gives “Excellent couch weather.” Otherwise,
+                “Scattered possibilities.” These names are playful summaries,
+                not validated predictions. With a missing score, we show only
+                the available scores in your private answer summary.
               </p>
               <h3>Small samples stay private</h3>
               <p>
-                Each city and metric needs 10 contributions. A meet-cute
-                category appears only when at least 10 contributors chose the
-                most common option; ties follow alphabetical category order.
-                Public results are frozen once after collection closes, so
-                watching the map cannot reveal a new person's answers.
+                Each city and metric needs 10 contributions. A meeting category
+                appears only when at least 10 contributors chose the most common
+                option; ties follow alphabetical category order. Public results
+                are frozen once after collection closes, so watching the map
+                cannot reveal a new person's answers.
               </p>
               <h3>Read with a generous pinch of salt</h3>
               <p>
@@ -150,10 +153,12 @@ export function InfoDialog({
             <>
               <h3>The question</h3>
               <p>
-                What if your group chat's dating debrief had coordinates? Mixed
-                Signals turns lived experiences into an extremely unofficial
-                dating forecast. It is about patterns, not naming people or
-                declaring winners.
+                What if “is dating like this for everyone here?” had more
+                context than one group chat? Mixed Signals combines anonymous
+                survey responses into city reports about connection, confusing
+                communication, and practical barriers. A “signal” is simply one
+                response. We describe contributors’ experiences, not everyone in
+                a city, and we never name or rate individual people.
               </p>
               <h3>The inspiration</h3>
               <p>

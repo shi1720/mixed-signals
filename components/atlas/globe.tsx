@@ -50,9 +50,11 @@ export function Globe({ results, metric, selected, onSelect, demo }: Props) {
   const [paused, setPaused] = useState(false),
     [fallback, setFallback] = useState(false),
     [hover, setHover] = useState<string | null>(null);
-  const pausedRef = useRef(false);
+  const pausedRef = useRef(false),
+    needsPaint = useRef(true);
   useEffect(() => {
     propsRef.current = { results, metric, selected };
+    needsPaint.current = true;
     selectRef.current = onSelect;
   }, [results, metric, selected, onSelect]);
   useEffect(() => {
@@ -92,6 +94,7 @@ export function Globe({ results, metric, selected, onSelect, demo }: Props) {
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      needsPaint.current = true;
     };
     const observer = new ResizeObserver(resize);
     observer.observe(container);
@@ -102,14 +105,16 @@ export function Globe({ results, metric, selected, onSelect, demo }: Props) {
     visibility.observe(container);
     const draw = (time: number) => {
       frame = requestAnimationFrame(draw);
-      if (!visible || document.hidden) {
+      // Resizing clears the canvas. Paint once even offscreen, then pause it.
+      if ((!visible && !needsPaint.current) || document.hidden) {
         previous = time;
         return;
       }
       const elapsed = previous ? Math.min(time - previous, 50) : 0;
-      if (elapsed && elapsed < 30) return;
+      if (!needsPaint.current && elapsed && elapsed < 30) return;
+      needsPaint.current = false;
       previous = time;
-      if (!pausedRef.current && !drag.current)
+      if (visible && !pausedRef.current && !drag.current)
         rotation.current += elapsed * 0.0025;
       ctx.clearRect(0, 0, width, height);
       const cx = width * 0.5,
@@ -292,8 +297,8 @@ export function Globe({ results, metric, selected, onSelect, demo }: Props) {
       />
       {fallback && (
         <p className="globe-fallback">
-          Your browser cannot draw the globe. All the same forecasts are in the
-          city list below.
+          Your browser cannot draw the globe. All the same city reports are in
+          the city list below.
         </p>
       )}
       {!selected && demo && (

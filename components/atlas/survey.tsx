@@ -5,7 +5,9 @@ import {
   ArrowRight,
   ArrowUpRight,
   Check,
+  Circle,
   ShieldCheck,
+  LockKeyhole,
   CalendarPlus,
   Download,
   Radio,
@@ -21,6 +23,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
+import { PersonalSummary } from './personal-summary';
 import { CityPicker } from './city-picker';
 import {
   QUESTIONS,
@@ -95,6 +98,11 @@ export function Survey({
         campaignId: CAMPAIGN.id,
         label: result.forecast.label,
         revealsAt: result.revealsAt,
+        scores: {
+          chemistry: result.forecast.chemistry,
+          fog: result.forecast.fog,
+          friction: result.forecast.friction,
+        },
       };
       setStored(storeReceipt(saved));
       setReceipt(saved);
@@ -191,7 +199,10 @@ export function Survey({
     if (initialCity && !city) setCity(initialCity);
   }, [initialCity, city]);
   useEffect(() => {
-    heading.current?.focus();
+    heading.current?.focus({ preventScroll: true });
+    heading.current
+      ?.closest('[role=dialog]')
+      ?.scrollTo({ top: 0, behavior: 'instant' });
   }, [step]);
   const saveDraft = (data: {
     city: string | null;
@@ -248,7 +259,7 @@ export function Survey({
     }
     if (!city || !habitat || !consent) {
       setError(
-        'Choose a meet-cute habitat and agree to anonymous aggregation.',
+        'Choose where you meet people and agree to anonymous city summaries.',
       );
       return;
     }
@@ -289,7 +300,7 @@ export function Survey({
       setError(
         e instanceof Error
           ? e.message
-          : 'Your signal could not be sent. Please try again.',
+          : 'Your answers could not be saved. Please try again.',
       );
     } finally {
       submitting.current = false;
@@ -304,16 +315,44 @@ export function Survey({
         if (!busy) onOpenChange(v);
       }}
     >
-      <DialogContent className="survey-dialog" showCloseButton={!busy}>
+      <DialogContent
+        className="survey-dialog"
+        showCloseButton={!busy}
+        initialFocus={heading}
+      >
         <div className="survey-top">
           <span className="mini-brand">
-            <Radio size={17} /> FIELD REPORT / 001
+            <Radio size={17} /> YOUR CITY DATING SURVEY
           </span>
           <span>
-            {step === 6 ? 'SIGNAL RECEIVED' : `${Math.min(step + 1, 6)} OF 6`}
+            {step === 6 ? 'REPORT SAVED' : `${Math.min(step + 1, 6)} OF 6`}
           </span>
         </div>
-        {step < 6 && (
+        {step === 0 && (
+          <div className="survey-milestones" aria-label="Your progress">
+            <span className={city ? 'done' : ''}>
+              {city ? <Check size={13} /> : <Circle size={13} />} City chosen
+            </span>
+            <span
+              className={
+                Object.values(answers).filter((v) => v !== null).length >= 4
+                  ? 'done'
+                  : ''
+              }
+            >
+              {Object.values(answers).filter((v) => v !== null).length >= 4 ? (
+                <Check size={13} />
+              ) : (
+                <Circle size={13} />
+              )}{' '}
+              4+ answers
+            </span>
+            <span>
+              <LockKeyhole size={13} /> Submit privately
+            </span>
+          </div>
+        )}
+        {step === 0 && (
           <Progress
             value={((step + 1) / 6) * 100}
             className="survey-progress"
@@ -326,23 +365,23 @@ export function Survey({
               <MapPin size={30} />
             </span>
             <DialogTitle className="survey-title" ref={heading} tabIndex={-1}>
-              Where is your heart
+              Which city have
               <br />
-              currently headquartered?
+              you dated in?
             </DialogTitle>
             <DialogDescription className="survey-description">
-              Tell us about dating in one city over the last six months. No
-              names, profiles, or exact locations. Answer any four of eight
-              questions. Skip what you don’t know; a skipped question may leave
-              part of your personal forecast unread.
+              Think about your own dating experiences in the last six months.
+              Answer at least 4 of 8 ratings, then tell us where you meet
+              people. Skip what you can’t judge. You’ll see scores only for the
+              question groups you complete.
             </DialogDescription>
             {alreadySubmitted ? (
               <div className="form-notice">
                 <Check size={20} />
                 <p>
-                  This browser has already sent a signal this season. Thanks for
-                  being part of the experiment. Your receipt is under “Your
-                  signal” on the atlas.
+                  This browser has already submitted a response this season.
+                  Your saved report and deletion receipt are under “My report &
+                  deletion” on the main page.
                 </p>
               </div>
             ) : (
@@ -402,25 +441,46 @@ export function Survey({
             >
               {
                 [
-                  'Let’s check for chemistry.',
-                  'Every city has a price.',
-                  'Clear skies or mixed signals?',
-                  'One last atmospheric reading.',
+                  'Meeting people & making plans.',
+                  'Date costs & clear intentions.',
+                  'Being yourself & being ghosted.',
+                  'Getting there & looking ahead.',
                 ][step - 1]
               }
             </DialogTitle>
-            <DialogDescription className="survey-description">
-              Think about your own experiences in {cityName}. All experiences
-              are welcome, including the deeply confusing ones.
+            <DialogDescription
+              className={`survey-description ${step > 1 ? 'sr-only' : ''}`}
+            >
+              Think about dating in {cityName} in the last six months. Use the
+              scale’s labels; skip what you can’t judge.
             </DialogDescription>
+            <div
+              className="answer-progress"
+              aria-label={`${Object.values(answers).filter((v) => v !== null).length} of 8 ratings answered`}
+            >
+              <div>
+                {QUESTIONS.map((q) => (
+                  <span
+                    key={q.id}
+                    className={answers[q.id] !== null ? 'answered' : ''}
+                    aria-hidden="true"
+                  />
+                ))}
+              </div>
+              <b>
+                {Object.values(answers).filter((v) => v !== null).length}/8
+                answered
+              </b>
+              <span>4 required. Skipping is okay.</span>
+            </div>
             <div className="question-pair">
               {QUESTIONS.slice((step - 1) * 2, step * 2).map((q, i) => (
                 <fieldset className="question-block" key={q.id}>
                   <legend>
                     <span>0{(step - 1) * 2 + i + 1}</span>
-                    {q.title}
+                    <span id={`${q.id}-question`}>{q.question}</span>
                   </legend>
-                  <p id={`${q.id}-question`}>{q.question}</p>
+
                   <RadioGroup
                     aria-labelledby={`${q.id}-question`}
                     value={
@@ -474,10 +534,12 @@ export function Survey({
               ref={heading}
               tabIndex={-1}
             >
-              Where do the plot twists start?
+              Where do you meet people?
             </DialogTitle>
             <DialogDescription className="survey-description">
-              Where do you most often meet potential dates in {cityName}?
+              Where do you most often meet potential dates in {cityName}? Choose
+              one. This helps us describe where people meet, not which route
+              works best.
             </DialogDescription>
             <RadioGroup
               value={habitat ?? ''}
@@ -490,7 +552,7 @@ export function Survey({
                 });
               }}
               className="habitat-options"
-              aria-label="Meet-cute habitat"
+              aria-label="Where you meet potential dates"
             >
               {HABITATS.map((h) => (
                 <label
@@ -553,29 +615,24 @@ export function Survey({
               <span className="success-orbit">
                 <Check size={38} />
               </span>
-              <span className="eyebrow">TRANSMISSION SUCCESSFUL</span>
+              <span className="earned-badge">
+                <Sparkles size={15} /> LOCAL CORRESPONDENT · REPORT SAVED
+              </span>
               <DialogTitle className="survey-title" ref={heading} tabIndex={-1}>
-                You are officially
-                <br />
-                part of the atmosphere.
+                Your report is saved.
               </DialogTitle>
               <DialogDescription className="survey-description">
-                One anonymous signal from {cityName}. One slightly better
-                picture of the planet.
+                One anonymous response from {cityName}. Thanks for adding
+                context. The group chat is officially doing fieldwork.
               </DialogDescription>
             </div>
-            <div className="forecast-ticket">
-              <span>YOUR PERSONAL FORECAST</span>
-              <h3>{receipt.label}</h3>
+            <PersonalSummary receipt={receipt} />
+            <div className="reveal-next">
+              <b>Next: community results on 12 September.</b>
               <p>
-                Based only on your answers. This is your weather, not a verdict
-                on {cityName}.
+                Your city appears only if enough people respond. Invite people
+                with dating experience there to help build a useful picture.
               </p>
-              <div>
-                <span>{cityName.toUpperCase()}</span>
-                <Sparkles size={18} />
-                <span>SEASON 001</span>
-              </div>
             </div>
             <div className="receipt-actions">
               <a href="/api/reminder" className="button primary">
@@ -630,7 +687,7 @@ export function Survey({
           ) : (
             <span className="form-footnote">
               {step === 6
-                ? 'SEE YOU AT THE REVEAL.'
+                ? 'THANKS, LOCAL CORRESPONDENT.'
                 : 'ANONYMOUS BY DEFAULT. ALWAYS.'}
             </span>
           )}
@@ -645,12 +702,12 @@ export function Survey({
             </button>
           ) : step === 5 ? (
             <button className="button dark" onClick={submit} disabled={busy}>
-              {busy ? 'Sending your signal…' : 'Send my signal'}
+              {busy ? 'Saving your answers…' : 'Submit anonymous answers'}
               <ArrowUpRight size={17} />
             </button>
           ) : (
             <button className="button dark" onClick={() => onOpenChange(false)}>
-              Back to the atlas <ArrowRight size={17} />
+              Back to city reports <ArrowRight size={17} />
             </button>
           )}
         </div>

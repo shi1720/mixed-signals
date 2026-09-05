@@ -2,9 +2,9 @@
 
 # ✳ Mixed Signals
 
-### It's not you. It's your coordinates.
+### What’s dating actually like in your city?
 
-**An extremely unofficial dating forecast for planet Earth.**
+**An anonymous city dating survey, with useful context and a sense of humor.**
 
 [Explore the live atlas](https://mixed-signals-atlas.sg127977958.chatgpt.site) · [Architecture](docs/ARCHITECTURE.md) · [Run locally](#run-locally) · [Engineering evaluation lab](evals/README.md)
 
@@ -23,7 +23,7 @@ There are no profiles, matches, public individual responses, or city rankings. J
 ## The experiment
 
 1. **Drop a signal.** Pick a city where you have dated in the last six months. Answer at least four of eight optional questions, then choose a meet-cute habitat. Adults 18+ only.
-2. **Get your forecast.** Your personal forecast arrives immediately, with a private deletion receipt and a calendar reminder. No email required.
+2. **Get your private summary.** See scores for the question groups you complete, keep a deletion receipt, and download a calendar reminder. No email required.
 3. **Let the planet cook.** The collection window is shared by everyone. Refreshing cannot restart it.
 4. **Read the atmosphere.** At the deadline, cities with at least ten reports appear. Every individual metric also needs ten complete responses. The release is frozen once.
 
@@ -34,10 +34,11 @@ The preview uses **24 explicitly fictional city fixtures**. These never enter th
 ## What actually works
 
 - A draggable, rotating, zoomable point-cloud globe with real geographic coordinates and a local Natural Earth dataset. No map API key, remote tiles, or paid geocoding.
-- Searchable city forecasts, region filters, three scoring lenses, shareable city/metric views, and clearly labeled CSV exports.
-- A six-step survey with keyboard controls, explicit eligibility and aggregation consent, draft preservation, validation, and retry-safe submissions.
+- Readable city reports with all three scores, their definitions, directions and sample counts; two-city comparisons, region filters, shareable views and clearly labeled CSV exports.
+- A six-step survey with literal questions, actual answer progress, a Local correspondent completion badge, keyboard controls, consent, draft preservation, validation, and retry-safe submissions.
 - Real Cloudflare D1 persistence, database-enforced uniqueness, server and SQL deadline checks, and transactional reveal creation.
 - Recovery after a response is lost, private receipt download/restore, and withdrawal from another browser using the receipt.
+- Partial personal summaries remain useful when questions are skipped, and older deletion receipts remain compatible.
 - A real `.ics` reminder. No pretend email integration or unconfigured email promise.
 - Complete-case scoring, per-metric suppression, one-time snapshots, and traffic-driven raw-data retention.
 - Mobile layouts, reduced motion, a keyboard-accessible city list, error/empty states, and structured browser agent tools.
@@ -92,6 +93,8 @@ flowchart LR
 ```
 
 The database controls the final acceptance gate. A request that passed JavaScript validation but reaches SQLite after the deadline is rejected. Snapshot creation is a single guarded `INSERT … SELECT`, so it is atomic and does not rescan survey rows once the release exists. Deleting a report after the deadline freezes the release first in the same transaction.
+
+The interface uses plain names: **Connection**, **Mixed messages**, and **Date hassles**. Higher Connection means more positive experiences; higher Mixed messages or Date hassles means more difficulty. Scores are not percentages of people. API/CSV field names stay stable.
 
 Read [the architecture](docs/ARCHITECTURE.md), [API contract](docs/API.md), [data methodology](docs/METHODOLOGY.md), and [design decisions](docs/DECISIONS.md).
 

@@ -15,27 +15,30 @@ export interface CityResult {
 }
 export const METRICS = {
   chemistry: {
-    label: 'Chemistry',
+    label: 'Connection',
     description:
-      'Connection, feeling like yourself, and recommending your city. Higher means more sparks.',
-    low: 'Low spark',
-    high: 'Butterfly season',
+      'Meeting someone you like, feeling like yourself, and recommending dating here.',
+    direction: 'Higher = more positive experiences',
+    low: 'Less connection',
+    high: 'More connection',
     color: '#d6fb52',
   },
   fog: {
-    label: 'Mixed signals',
+    label: 'Mixed messages',
     description:
-      'Unclear intentions and conversations disappearing. Higher means a foggier forecast.',
-    low: 'Clear skies',
-    high: 'It’s complicated',
+      'Unclear intentions and conversations disappearing without a goodbye.',
+    direction: 'Higher = more confusion',
+    low: 'Less confusion',
+    high: 'More confusion',
     color: '#f6adcd',
   },
   friction: {
-    label: 'Date friction',
+    label: 'Date hassles',
     description:
-      'Plans falling through, cost, and travel. Higher means more logistical hurdles.',
-    low: 'Easy breezy',
-    high: 'Calendar warfare',
+      'Plans falling through, unaffordable dates, and difficult travel.',
+    direction: 'Higher = more practical barriers',
+    low: 'Fewer hassles',
+    high: 'More hassles',
     color: '#b6ceee',
   },
 } as const;

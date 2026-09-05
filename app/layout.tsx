@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Mixed Signals | The world’s dating weather',
   description:
-    'A planet-sized dating experiment. Drop an anonymous signal, wait seven days, and explore the world’s dating weather. No names. Just coordinates.',
+    'What is dating actually like in your city? Take an anonymous 2-minute survey, get your private answer summary, and compare community city reports on 12 September.',
 };
 
 export default function RootLayout({
