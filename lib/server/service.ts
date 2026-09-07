@@ -31,6 +31,7 @@ export async function createSession(request: Request, db: D1Database) {
   return json(
     {
       submitted: !!existing,
+      phase: campaignPhase(),
       cityId: existing?.city_id ?? null,
       campaignId: CAMPAIGN.id,
     },
@@ -80,7 +81,7 @@ async function rateLimit(
   )
     throw new ApiError(
       429,
-      'A few too many signals at once. Please try again in an hour.',
+      'Too many requests from this connection. Please try again in an hour.',
       'rate_limited',
     );
   await db
@@ -123,7 +124,7 @@ export async function submitSignal(request: Request, db: D1Database) {
     )
       throw new ApiError(
         409,
-        'This browser has already sent a signal this season.',
+        'This browser has already submitted a response to this survey.',
         'already_submitted',
       );
     return json({
@@ -137,7 +138,9 @@ export async function submitSignal(request: Request, db: D1Database) {
   if (campaignPhase() !== 'collecting')
     throw new ApiError(
       410,
-      'This season is closed. The atlas is ready to explore.',
+      campaignPhase() === 'upcoming'
+        ? 'This survey has not opened yet.'
+        : 'This survey has closed. Community results are ready to explore.',
       'campaign_closed',
     );
   await rateLimit(request, db, sessionHash);

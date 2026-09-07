@@ -13,7 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Mixed Signals | The world’s dating weather',
+  title: 'Mixed Signals | Dating, city by city',
+  icons: { icon: '/favicon.svg' },
   description:
     'What is dating actually like in your city? Take an anonymous 2-minute survey, get your private answer summary, and compare community city reports on 12 September.',
 };

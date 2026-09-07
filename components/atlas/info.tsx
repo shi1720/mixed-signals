@@ -29,10 +29,10 @@ export function InfoDialog({
         </span>
         <DialogTitle className="survey-title">
           {privacy
-            ? 'Our data promise.'
+            ? 'Privacy and your data.'
             : method
               ? 'What the scores mean.'
-              : 'A city dating survey.\nWith a sense of humor.'}
+              : 'Why this survey exists.'}
         </DialogTitle>
         <DialogDescription className="survey-description">
           {privacy
@@ -93,7 +93,7 @@ export function InfoDialog({
             <>
               <h3>One shared seven-day window</h3>
               <p>
-                Season 001 collects from 5 September 2026 at 13:00 UTC to 12
+                This survey collects from 5 September 2026 at 13:00 UTC to 12
                 September 2026 at 13:00 UTC. The server closes submissions at
                 that deadline. The countdown never restarts when you refresh.
                 Results unlock automatically.
@@ -122,25 +122,16 @@ export function InfoDialog({
                 answered, average those scores, then round to the nearest five.
                 “Skip” is missing data, never a neutral answer.
               </p>
-              <h3>How a forecast gets its name</h3>
-              <p>
-                Connection at least 60 and mixed messages below 50 gives “Mostly
-                butterflies.” Both at least those thresholds gives “Hot with a
-                chance of ‘what are we?’.” Connection below 60 and date hassles
-                at least 60 gives “Excellent couch weather.” Otherwise,
-                “Scattered possibilities.” These names are playful summaries,
-                not validated predictions. With a missing score, we show only
-                the available scores in your private answer summary.
-              </p>
               <h3>Small samples stay private</h3>
               <p>
-                Each city and metric needs 10 contributions. A meeting category
-                appears only when at least 10 contributors chose the most common
-                option; ties follow alphabetical category order. Public results
-                are frozen once after collection closes, so watching the map
-                cannot reveal a new person's answers.
+                A city needs 10 survey responses. Each score needs 10 complete
+                answer groups. A meeting category appears only when at least 10
+                contributors chose the most common option; ties follow
+                alphabetical category order. Public results are frozen once
+                after collection closes, so watching the map cannot reveal a new
+                person's answers.
               </p>
-              <h3>Read with a generous pinch of salt</h3>
+              <h3>What these results can tell you</h3>
               <p>
                 This is a self-selected, unrepresentative survey. One report per
                 browser is an abuse deterrent, not proof of one person. Scores
@@ -177,10 +168,9 @@ export function InfoDialog({
               </a>
               <h3>Built in the open</h3>
               <p>
-                Made by Shivam Gupta. Geography comes from Natural Earth via
-                world-atlas. The source includes the architecture, transparent
-                scoring, reproducible tests, deployment guide, and engineering
-                challenges for evaluating coding agents.
+                Made by Shivam Gupta. The questions, scoring rules and code are
+                public, so you can see how the reports are made. Geography comes
+                from Natural Earth.
               </p>
               <a
                 className="inline-link"

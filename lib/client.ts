@@ -21,24 +21,22 @@ export async function api<T>(
       result = (await response.json()) as Record<string, unknown>;
     } catch {
       throw new Error(
-        'The signal tower sent an unexpected response. Please try again.',
+        'The service returned an unexpected response. Please try again.',
       );
     }
     if (!response.ok)
       throw new Error(
         typeof result.error === 'string'
           ? result.error
-          : 'Your signal could not be sent. Please try again.',
+          : 'The request could not be completed. Please try again.',
       );
     return result as T;
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError')
-      throw new Error(
-        'That took too long. Your answers are still here. Retry safely.',
-      );
+      throw new Error('The service did not respond in time. Please try again.');
     if (error instanceof TypeError)
       throw new Error(
-        'You seem to be offline. Your answers are still here. Reconnect and retry.',
+        'Could not connect to the service. Check your connection and try again.',
       );
     throw error;
   } finally {

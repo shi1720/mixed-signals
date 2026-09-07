@@ -21,7 +21,7 @@ export const METRICS = {
     direction: 'Higher = more positive experiences',
     low: 'Less connection',
     high: 'More connection',
-    color: '#d6fb52',
+    color: '#65a0e8',
   },
   fog: {
     label: 'Mixed messages',
@@ -30,7 +30,7 @@ export const METRICS = {
     direction: 'Higher = more confusion',
     low: 'Less confusion',
     high: 'More confusion',
-    color: '#f6adcd',
+    color: '#dc86a0',
   },
   friction: {
     label: 'Date hassles',
@@ -39,7 +39,7 @@ export const METRICS = {
     direction: 'Higher = more practical barriers',
     low: 'Fewer hassles',
     high: 'More hassles',
-    color: '#b6ceee',
+    color: '#c79657',
   },
 } as const;
 function meanComplete(values: (number | null)[]): number | null {

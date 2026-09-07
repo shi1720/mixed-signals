@@ -7,7 +7,7 @@ export function PersonalSummary({ receipt }: { receipt: Receipt }) {
       className="personal-summary"
       aria-label="Your private answer summary"
     >
-      <span className="eyebrow">YOUR ANSWERS, SUMMED UP</span>
+      <span className="eyebrow">Your private summary</span>
       <p>
         Only your answers. These are not city averages or predictions about your
         love life.

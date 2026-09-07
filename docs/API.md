@@ -49,3 +49,7 @@ No route enumerates report IDs, individual answers, browser hashes, network hash
 ## Display labels and compatibility
 
 The UI calls `chemistry` Connection, `fog` Mixed messages, and `friction` Date hassles. This is a presentation change. Server response keys, CSV columns, question semantics, database rows, and existing snapshots are unchanged. No additional raw-data endpoint was added.
+
+## Collection status in the private session
+
+`GET /api/session` also returns `phase` (`upcoming`, `collecting`, or `revealed`). This is an additive field. The form verifies both the public collection status and session phase before accepting a new response. An existing immutable submission can still be replayed after the deadline to recover its receipt. Public result panels distinguish an unresolved request from a successfully retrieved empty release.

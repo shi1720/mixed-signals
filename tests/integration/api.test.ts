@@ -74,6 +74,41 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 describe('real SQL submission service', () => {
+  it.each([
+    [start - 1, 'upcoming'],
+    [start, 'collecting'],
+    [end, 'revealed'],
+  ] as const)(
+    'session reports authoritative phase at %s',
+    async (now, phase) => {
+      clock(now);
+      const response = await createSession(
+        new Request(origin + '/api/session'),
+        db.binding(),
+      );
+      expect(await response.json()).toMatchObject({ phase, submitted: false });
+    },
+  );
+  it('recovers an accepted report after collection closes, while rejecting new reports', async () => {
+    const input = body(),
+      session = randomToken();
+    const first = (await (
+      await submitSignal(req(input, session), db.binding())
+    ).json()) as { id: string };
+    clock(end);
+    const replay = await (
+      await submitSignal(req(input, session), db.binding())
+    ).json();
+    expect(replay).toMatchObject({ id: first.id, replayed: true });
+    await expect(submitSignal(req(body()), db.binding())).rejects.toMatchObject(
+      { status: 410 },
+    );
+    clock(start - 1);
+    await expect(submitSignal(req(body()), db.binding())).rejects.toMatchObject(
+      { message: 'This survey has not opened yet.' },
+    );
+  });
+
   it('issues secure HttpOnly cookies and private headers', async () => {
     const response = await createSession(
       new Request(origin + '/api/session'),

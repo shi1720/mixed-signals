@@ -7,16 +7,15 @@ export default function ErrorPage({
 }) {
   return (
     <main className="not-found">
-      <span className="brand-symbol">✳</span>
-      <h1>A little atmospheric interference.</h1>
+      <h1>We couldn’t load this page.</h1>
       <p>
-        Something interrupted the page. Your submitted report is safe in the
-        database.
+        Please try again. If this happened during submission, reopen the survey
+        to check whether your response arrived.
       </p>
       <button className="button primary" onClick={reset}>
         Try again
       </button>
-      <a href="/">Back to the atlas</a>
+      <a href="/">Back to Mixed Signals</a>
     </main>
   );
 }

@@ -2,11 +2,11 @@
 
 ## One sentence
 
-An anonymous global dating experiment that turns lived experiences into a privacy-conscious weather atlas after a shared seven-day reveal.
+An anonymous global dating experiment that turns lived experiences into a privacy-conscious city atlas after a shared seven-day reveal.
 
 ## A 30-second introduction
 
-Mixed Signals gives a group chat's dating debrief coordinates. People answer a short, playful survey about sparks, ghosting, affordability and logistics in their city. They immediately get a private summary of their completed answer groups, then return at the shared reveal for an interactive globe of collective city results. Behind the playful interface are real engineering constraints: retry-safe writes, exact deadline enforcement, missing-data semantics, transactional snapshots, privacy thresholds, and receipt-based withdrawal.
+Mixed Signals gives a group chat's dating debrief coordinates. People answer a short survey about connection, communication, affordability and travel in their city. They immediately get a private summary of their completed answer groups, then return at the shared reveal for an interactive globe of collective city results. Behind the playful interface are real engineering constraints: retry-safe writes, exact deadline enforcement, missing-data semantics, transactional snapshots, privacy thresholds, and receipt-based withdrawal.
 
 ## The problem
 
@@ -16,7 +16,7 @@ It does not promise representative research or matchmaking. Its useful outcome i
 
 ## A two-minute demo
 
-1. Open the atlas and point to the **EXAMPLE · INVENTED DATA** label. Explain that no fictional activity enters the database.
+1. Open the atlas and point to the **Example data** label. Explain that no fictional activity enters the database.
 2. Open a city report, read Connection, Mixed messages and Date hassles together, then compare the same scores with another city. The point-cloud globe and semantic city list share one state.
 3. On a local development instance, submit a synthetic report. Show the partial-capable private summary, completion badge, calendar file and private deletion receipt.
 4. Explain why the public endpoint returns no provisional results before the deadline.

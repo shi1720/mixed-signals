@@ -33,3 +33,15 @@ The browser suite checks the compiled Worker with isolated D1. It covers the com
 ## What stays uncertain
 
 A voluntary survey cannot establish representative city experiences, dating success rates, causation, or a person's likely outcome. Real participant recruitment and feedback are still necessary. The interface makes those limits visible.
+
+## 7 September: editorial redesign and production-state review
+
+The owner reported that the previous design still felt generated. A new reviewer used a stricter rubric rather than reusing the earlier score. It assessed original design (25), plain helpful language (25), immediate task/value clarity (20), credibility/privacy (15), and mobile/accessibility usability (15). The baseline was **70/100**; the revised design scored **88/100** (21, 22, 18, 14, 13). These scores are specific to that rubric and are not comparable with the earlier 63-to-92 review.
+
+The review replaced repeated marketing cards, decorative stars, italic wordplay, a slogan ticker and inconsistent weather terminology with an ink/cobalt atlas, an upright headline, one survey opening, a compact shared deadline, and simpler city rows. It retained one light post-submit line and a completion badge. The final review caught two missing text spaces and an unnecessary enclosing border; all were corrected.
+
+A separate engineering reviewer identified real issues that the earlier release missed: loading/error states looked like low participation, generic network errors implied a write outcome, survey controls could remain available outside collection, and recovered receipts still advertised a future reveal. These were fixed with explicit result states, neutral request errors, authoritative session-phase checks, a visible mid-survey closure notice, and receipt recovery/navigation after closure. Targeted browser and SQL regressions cover these paths. Enlarged-text checking also found a city-picker resize loop and a city-row overflow; popup sizing and relative font units now keep the form operable at 200% text.
+
+The survey's questions, answer values, scoring formulas, campaign dates and raw-data schema remain unchanged. Meeting-category helper descriptions are now literal. The existing “Fog machine” endpoint is clarified as “very unclear” without changing its value or direction. API and CSV field names remain stable.
+
+The reviewers inspected source and saved screenshots. Browser checks were run separately by the implementing agent. Neither review is participant research, a professional security audit, a high-traffic benchmark or a claim that every browser is certified.

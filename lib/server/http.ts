@@ -39,7 +39,7 @@ export async function handle(action: () => Promise<Response>) {
     return json(
       {
         error:
-          'Our signal tower is taking a breather. Please try again shortly.',
+          'The survey service is temporarily unavailable. Please try again shortly.',
         code: 'service_unavailable',
       },
       503,
@@ -69,7 +69,7 @@ export async function readJson(
       'unsupported_media_type',
     );
   if (Number(request.headers.get('content-length') ?? 0) > maxBytes)
-    throw new ApiError(413, 'That signal is too large.', 'body_too_large');
+    throw new ApiError(413, 'The request is too large.', 'body_too_large');
   const reader = request.body?.getReader();
   if (!reader) throw new ApiError(400, 'A request body is required.');
   const decoder = new TextDecoder();
@@ -82,7 +82,7 @@ export async function readJson(
       size += value.byteLength;
       if (size > maxBytes) {
         await reader.cancel();
-        throw new ApiError(413, 'That signal is too large.', 'body_too_large');
+        throw new ApiError(413, 'The request is too large.', 'body_too_large');
       }
       text += decoder.decode(value, { stream: true });
     }
@@ -90,7 +90,11 @@ export async function readJson(
     return JSON.parse(text);
   } catch (error) {
     if (error instanceof ApiError) throw error;
-    throw new ApiError(400, 'That signal was not valid JSON.', 'invalid_json');
+    throw new ApiError(
+      400,
+      'The request format was not valid.',
+      'invalid_json',
+    );
   } finally {
     reader.releaseLock();
   }

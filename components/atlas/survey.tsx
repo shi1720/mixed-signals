@@ -35,7 +35,7 @@ import {
   answersSchema,
   draftAnswersSchema,
 } from '@/lib/survey';
-import { CAMPAIGN } from '@/lib/campaign';
+import { CAMPAIGN, type CampaignPhase } from '@/lib/campaign';
 import { CITY_BY_ID } from '@/lib/cities';
 import { personalForecast } from '@/lib/forecast';
 import {
@@ -53,6 +53,8 @@ interface Props {
   onSubmitted: (receipt: Receipt) => void;
   onPrivacy: () => void;
   initialCity?: string | null;
+  phase: CampaignPhase | null;
+  onExplore: () => void;
 }
 export function Survey({
   open,
@@ -60,6 +62,8 @@ export function Survey({
   onSubmitted,
   onPrivacy,
   initialCity,
+  phase,
+  onExplore,
 }: Props) {
   const [step, setStep] = useState(0),
     [city, setCity] = useState<string | null>(initialCity ?? null),
@@ -73,7 +77,8 @@ export function Survey({
     [ready, setReady] = useState(false),
     [alreadySubmitted, setAlreadySubmitted] = useState(false),
     [receipt, setReceipt] = useState<Receipt | null>(null),
-    [stored, setStored] = useState(true);
+    [stored, setStored] = useState(true),
+    [sessionPhase, setSessionPhase] = useState<CampaignPhase | null>(null);
   const intent = useRef<{
       idempotencyKey: string;
       deletionToken: string;
@@ -150,9 +155,11 @@ export function Survey({
     if (open) {
       setError('');
       setReady(false);
-      api<{ submitted: boolean }>('/api/session')
+      setSessionPhase(null);
+      api<{ submitted: boolean; phase: CampaignPhase }>('/api/session')
         .then(async (s) => {
           setAlreadySubmitted(s.submitted);
+          setSessionPhase(s.phase);
           setReady(true);
           if (s.submitted) {
             let pending;
@@ -223,6 +230,9 @@ export function Survey({
     setAnswers(next);
     saveDraft({ city, answers: next, habitat });
   };
+  const closed = phase === 'revealed' || sessionPhase === 'revealed';
+  const canSubmitNew =
+    ready && sessionPhase === 'collecting' && phase === 'collecting';
   const next = () => {
     setError('');
     if (step === 0) {
@@ -244,6 +254,12 @@ export function Survey({
         );
         return;
       }
+    }
+    if (!canSubmitNew && !pendingBody.current) {
+      setError(
+        'The survey is not accepting new responses. Your unsent answers remain in this tab.',
+      );
+      return;
     }
     setStep(Math.min(step + 1, 5));
   };
@@ -322,10 +338,10 @@ export function Survey({
       >
         <div className="survey-top">
           <span className="mini-brand">
-            <Radio size={17} /> YOUR CITY DATING SURVEY
+            <Radio size={17} /> Your city dating survey
           </span>
           <span>
-            {step === 6 ? 'REPORT SAVED' : `${Math.min(step + 1, 6)} OF 6`}
+            {step === 6 ? 'Saved' : `Step ${Math.min(step + 1, 6)} of 6`}
           </span>
         </div>
         {step === 0 && (
@@ -365,9 +381,7 @@ export function Survey({
               <MapPin size={30} />
             </span>
             <DialogTitle className="survey-title" ref={heading} tabIndex={-1}>
-              Which city have
-              <br />
-              you dated in?
+              Which city have you dated in?
             </DialogTitle>
             <DialogDescription className="survey-description">
               Think about your own dating experiences in the last six months.
@@ -379,15 +393,25 @@ export function Survey({
               <div className="form-notice">
                 <Check size={20} />
                 <p>
-                  This browser has already submitted a response this season.
+                  This browser has already submitted a response to this survey.
                   Your saved report and deletion receipt are under “My report &
                   deletion” on the main page.
                 </p>
               </div>
+            ) : ready && !canSubmitNew && !pendingBody.current ? (
+              <output className="form-notice">
+                <p>
+                  {closed
+                    ? 'This survey has closed. New responses are no longer accepted. You can explore the community results.'
+                    : phase === null
+                      ? 'We could not confirm whether the survey is open. Close this window and retry the connection.'
+                      : 'This survey is not open yet. Please return when collection begins.'}
+                </p>
+              </output>
             ) : (
               <>
                 <label className="field-label" htmlFor="survey-city">
-                  YOUR CITY
+                  Your city
                 </label>
                 <CityPicker
                   id="survey-city"
@@ -398,8 +422,8 @@ export function Survey({
                   }}
                 />
                 <p className="input-help">
-                  {CITY_BY_ID.size} cities in our first season. Only choose a
-                  city you know through dating.
+                  {CITY_BY_ID.size} cities in this survey. Only choose a city
+                  you know through dating.
                 </p>
                 <label className="check-label" htmlFor="adult-consent">
                   <Checkbox
@@ -509,19 +533,21 @@ export function Survey({
                       ))}
                     </div>
                     <div className="score-anchors">
-                      <span>{q.low}</span>
+                      <span>
+                        {q.low}
+                        {q.id === 'clarity' ? ' (very unclear)' : ''}
+                      </span>
                       <span>{q.high}</span>
                     </div>
                     <label className="skip-option" htmlFor={`${q.id}-skip`}>
                       <RadioGroupItem
                         id={`${q.id}-skip`}
                         value="skip"
-                        aria-label={`Not enough experience for ${q.title}`}
+                        aria-label={`Not enough experience for ${q.question}`}
                       />{' '}
                       Not enough experience / skip
                     </label>
                   </RadioGroup>
-                  <p className="question-aside">{q.aside}</p>
                 </fieldset>
               ))}
             </div>
@@ -599,7 +625,7 @@ export function Survey({
                 I agree to my answers being combined into anonymous city
                 summaries. I can delete my private report with my receipt.{' '}
                 <button type="button" className="text-link" onClick={onPrivacy}>
-                  Read the data promise.
+                  Read about privacy and data.
                 </button>
               </span>
             </label>
@@ -616,7 +642,7 @@ export function Survey({
                 <Check size={38} />
               </span>
               <span className="earned-badge">
-                <Sparkles size={15} /> LOCAL CORRESPONDENT · REPORT SAVED
+                <Sparkles size={15} /> Local correspondent
               </span>
               <DialogTitle className="survey-title" ref={heading} tabIndex={-1}>
                 Your report is saved.
@@ -628,16 +654,27 @@ export function Survey({
             </div>
             <PersonalSummary receipt={receipt} />
             <div className="reveal-next">
-              <b>Next: community results on 12 September.</b>
+              <b>
+                {closed
+                  ? 'Community results are now open.'
+                  : 'Next: community results on 12 September.'}
+              </b>
               <p>
-                Your city appears only if enough people respond. Invite people
-                with dating experience there to help build a useful picture.
+                {closed
+                  ? 'Cities and scores are published only when they meet the minimum response count.'
+                  : 'Your city appears only if enough people respond. Invite people with dating experience there to help build a useful picture.'}
               </p>
             </div>
             <div className="receipt-actions">
-              <a href="/api/reminder" className="button primary">
-                <CalendarPlus size={18} /> Add reveal to calendar
-              </a>
+              {closed ? (
+                <button className="button primary" onClick={onExplore}>
+                  Explore community results <ArrowRight size={18} />
+                </button>
+              ) : (
+                <a href="/api/reminder" className="button primary">
+                  <CalendarPlus size={18} /> Add reveal to calendar
+                </a>
+              )}
               <button
                 className="button outline"
                 onClick={() =>
@@ -659,6 +696,15 @@ export function Survey({
               required.
             </p>
           </>
+        )}
+        {step > 0 && step < 6 && !canSubmitNew && !pendingBody.current && (
+          <output className="form-notice">
+            <p>
+              {closed
+                ? 'The survey closed while you were answering. New responses can no longer be accepted. Your unsent answers remain in this tab.'
+                : 'We could not confirm whether the survey is open. Your unsent answers remain in this tab. Close this window and retry the connection.'}
+            </p>
+          </output>
         )}
         {step < 6 && pendingBody.current && !busy && (
           <p className="form-footnote">
@@ -687,21 +733,25 @@ export function Survey({
           ) : (
             <span className="form-footnote">
               {step === 6
-                ? 'THANKS, LOCAL CORRESPONDENT.'
-                : 'ANONYMOUS BY DEFAULT. ALWAYS.'}
+                ? 'Thank you for contributing.'
+                : 'No name or email required.'}
             </span>
           )}
           {step < 5 && !alreadySubmitted ? (
             <button
               className="button dark"
               onClick={next}
-              disabled={step === 0 && !ready}
+              disabled={!canSubmitNew && !pendingBody.current}
             >
               {ready ? 'Continue' : 'Connecting'}
               <ArrowRight size={17} />
             </button>
           ) : step === 5 ? (
-            <button className="button dark" onClick={submit} disabled={busy}>
+            <button
+              className="button dark"
+              onClick={submit}
+              disabled={busy || (!canSubmitNew && !pendingBody.current)}
+            >
               {busy ? 'Saving your answers…' : 'Submit anonymous answers'}
               <ArrowUpRight size={17} />
             </button>

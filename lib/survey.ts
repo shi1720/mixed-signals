@@ -122,13 +122,13 @@ export const HABITATS = [
   {
     id: 'apps',
     label: 'The apps',
-    detail: 'Thumbs doing overtime',
+    detail: 'Dating apps or dating websites',
     emoji: '📱',
   },
   {
     id: 'friends',
     label: 'Friends of friends',
-    detail: 'The group chat has a plan',
+    detail: 'Introductions through people you know',
     emoji: '🤝',
   },
   {
@@ -140,13 +140,13 @@ export const HABITATS = [
   {
     id: 'hobbies',
     label: 'Shared interests',
-    detail: 'Run clubs and plot twists',
+    detail: 'Hobbies, clubs or shared activities',
     emoji: '🎨',
   },
   {
     id: 'none',
     label: 'Still looking',
-    detail: 'Accepting cosmic assistance',
+    detail: 'I have not found a usual way to meet people',
     emoji: '🪐',
   },
 ] as const;

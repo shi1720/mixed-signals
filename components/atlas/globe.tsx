@@ -129,8 +129,8 @@ export function Globe({ results, metric, selected, onSelect, demo }: Props) {
         cy,
         r * 1.3,
       );
-      atmosphere.addColorStop(0, '#adc6621c');
-      atmosphere.addColorStop(1, '#a6c45b00');
+      atmosphere.addColorStop(0, '#80baff13');
+      atmosphere.addColorStop(1, '#80baff00');
       ctx.fillStyle = atmosphere;
       ctx.beginPath();
       ctx.arc(cx, cy, r * 1.3, 0, Math.PI * 2);
@@ -143,18 +143,18 @@ export function Globe({ results, metric, selected, onSelect, demo }: Props) {
         cy,
         r * 1.06,
       );
-      sphere.addColorStop(0, '#3e4b30');
-      sphere.addColorStop(0.65, '#293522');
-      sphere.addColorStop(1, '#131d16');
+      sphere.addColorStop(0, '#2c4c70');
+      sphere.addColorStop(0.65, '#1c3657');
+      sphere.addColorStop(1, '#102138');
       ctx.fillStyle = sphere;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = '#bbd57935';
+      ctx.strokeStyle = '#a9c4e650';
       ctx.lineWidth = 0.8;
       ctx.stroke();
       // Geographic graticule follows the exact same projection as points and cities.
-      ctx.strokeStyle = '#c5d89716';
+      ctx.strokeStyle = '#a9c4e627';
       ctx.lineWidth = 0.65;
       const line = (coords: [number, number][]) => {
         ctx.beginPath();
@@ -178,7 +178,7 @@ export function Globe({ results, metric, selected, onSelect, demo }: Props) {
       for (const [lon, lat] of points) {
         const p = projectPoint(lon, lat, rotation.current, tilt.current);
         if (p.z < 0) continue;
-        ctx.fillStyle = `rgba(193,211,140,${0.3 + p.z * 0.65})`;
+        ctx.fillStyle = `rgba(155,196,235,${0.3 + p.z * 0.65})`;
         ctx.beginPath();
         ctx.arc(
           cx + p.x * r,
@@ -228,12 +228,6 @@ export function Globe({ results, metric, selected, onSelect, demo }: Props) {
         }
         markers.current.push({ x, y, city, r: Math.max(pr + 7, 14) });
       }
-      // Orbit line is an atlas instrument, not a fabricated geography asset.
-      ctx.strokeStyle = '#d6fb5238';
-      ctx.lineWidth = 0.8;
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, r * 1.28, r * 0.26, -0.28, 0, Math.PI * 2);
-      ctx.stroke();
       ctx.restore();
     };
     frame = requestAnimationFrame(draw);
@@ -258,7 +252,7 @@ export function Globe({ results, metric, selected, onSelect, demo }: Props) {
       <canvas
         ref={ref}
         className="globe-canvas"
-        aria-label={`${demo ? 'Illustrative' : 'Revealed'} dating-weather globe. Drag to rotate. Use the city list below for keyboard navigation.`}
+        aria-label={`${demo ? 'Example' : 'Community'} city dating globe. Drag to rotate. Use the city list below for keyboard navigation.`}
         role="img"
         onPointerDown={(e) => {
           const p = coords(e);
@@ -301,12 +295,6 @@ export function Globe({ results, metric, selected, onSelect, demo }: Props) {
           the city list below.
         </p>
       )}
-      {!selected && demo && (
-        <div className="map-caption">
-          <span>EVERY CITY HAS A TYPE.</span>
-          <strong>Let's find yours.</strong>
-        </div>
-      )}
       {hover && <div className="globe-tooltip">{hover} · Click to explore</div>}
       <div className="globe-controls">
         <button
@@ -347,7 +335,7 @@ export function Globe({ results, metric, selected, onSelect, demo }: Props) {
           <RotateCcw size={15} />
         </button>
       </div>
-      <span className="drag-hint">DRAG TO WANDER · CLICK A SIGNAL</span>
+      <span className="drag-hint">Select a city dot to read its report</span>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 <div align="center">
 
-# ✳ Mixed Signals
+# Mixed Signals
 
 ### What’s dating actually like in your city?
 
@@ -16,16 +16,16 @@
 
 Your group chat has theories about dating in your city. Mixed Signals gives those theories coordinates.
 
-People send a short, anonymous report about dating in one of **101 cities**. A shared seven-day countdown keeps the collective results sealed. At the reveal, an interactive globe shows the contributors' dating weather: chemistry, mixed signals, and the logistics of getting two adults to the same café.
+People send a short, anonymous report about dating in one of **101 cities**. A shared seven-day countdown keeps the collective results sealed. At the reveal, an interactive globe shows three scores: connection, mixed messages, and the practical side of dating.
 
 There are no profiles, matches, public individual responses, or city rankings. Just a playful collective experiment with a serious data boundary.
 
 ## The experiment
 
-1. **Drop a signal.** Pick a city where you have dated in the last six months. Answer at least four of eight optional questions, then choose a meet-cute habitat. Adults 18+ only.
+1. **Share your experience.** Pick a city where you have dated in the last six months. Answer at least four of eight optional questions, then choose where you usually meet people. Adults 18+ only.
 2. **Get your private summary.** See scores for the question groups you complete, keep a deletion receipt, and download a calendar reminder. No email required.
-3. **Let the planet cook.** The collection window is shared by everyone. Refreshing cannot restart it.
-4. **Read the atmosphere.** At the deadline, cities with at least ten reports appear. Every individual metric also needs ten complete responses. The release is frozen once.
+3. **Wait for the shared reveal.** The collection window is shared by everyone. Refreshing cannot restart it.
+4. **Compare city reports.** At the deadline, cities with at least ten reports appear. Every individual metric also needs ten complete responses. The release is frozen once.
 
 **Season 001:** 5 September 2026, 13:00 UTC → 12 September 2026, 13:00 UTC. The website shows the reveal in the visitor's local timezone.
 
@@ -41,7 +41,8 @@ The preview uses **24 explicitly fictional city fixtures**. These never enter th
 - Partial personal summaries remain useful when questions are skipped, and older deletion receipts remain compatible.
 - A real `.ics` reminder. No pretend email integration or unconfigured email promise.
 - Complete-case scoring, per-metric suppression, one-time snapshots, and traffic-driven raw-data retention.
-- Mobile layouts, reduced motion, a keyboard-accessible city list, error/empty states, and structured browser agent tools.
+- Responsive layouts, reduced motion, a keyboard-accessible city list, and structured browser agent tools.
+- Explicit loading, failed-request and insufficient-sample states. Collection status gates new surveys, while interrupted submissions remain recoverable after closure.
 - A Python release validator and three reproducible engineering tasks with golden patches and fail-before/pass-after grading.
 
 ## Run locally
@@ -58,7 +59,7 @@ npm run dev
 
 Open the URL printed by the dev server. Local D1 state lives under `.wrangler/state/` and survives restarts. It is ignored by Git and is never uploaded with deployment artifacts.
 
-The default campaign intentionally has a fixed historical window. If you are trying the project after its reveal, the real survey will be closed. The illustrative preview still works. To run your own experiment, follow [starting a new season](docs/DEPLOYMENT.md#starting-a-new-season).
+The default campaign intentionally has a fixed window. If you are trying the project after its reveal, the real survey will be closed. The illustrative preview still works. To run your own experiment, follow [starting a new season](docs/DEPLOYMENT.md#starting-a-new-season).
 
 ## Verify it
 
@@ -122,7 +123,7 @@ The reference deployment uses **Cloudflare Workers + D1 through Sites**, allowin
 
 Inspired by [Cami M.'s MIT student restroom map](https://mitadmissions.org/blogs/entry/the-best-and-worst-places-to-%F0%9F%92%A9-on-campus/) and its [original source](https://github.com/camimgh/PoopMap): a reminder that a wonderfully specific question can make collective experience visible. Mixed Signals is independent and not affiliated with MIT.
 
-Geography: [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/) public-domain data, distributed through [world-atlas](https://github.com/topojson/world-atlas). UI primitives: Base UI and shadcn. Icons: Lucide. Fonts: Geist.
+Geography: [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/) public-domain data, distributed through [world-atlas](https://github.com/topojson/world-atlas). UI primitives: Base UI and shadcn. Icons: Lucide. Fonts: Geist, with a system Georgia headline.
 
 Created by [Shivam Gupta](https://github.com/shi1720), with AI-assisted implementation and independent agent reviews. No fabricated users, traffic, employment history, or performance claims.
 

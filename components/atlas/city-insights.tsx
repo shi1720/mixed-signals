@@ -5,6 +5,7 @@ import {
   GitCompareArrows,
   LockKeyhole,
   MapPin,
+  LoaderCircle,
   X,
 } from 'lucide-react';
 import { NativeSelect } from '@/components/ui/native-select';
@@ -17,6 +18,9 @@ export function CityInsights({
   selected,
   demo,
   revealed,
+  loading,
+  error,
+  canContribute,
   onSelect,
   onSurvey,
 }: {
@@ -24,6 +28,9 @@ export function CityInsights({
   selected: string | null;
   demo: boolean;
   revealed: boolean;
+  loading: boolean;
+  error: string;
+  canContribute: boolean;
   onSelect: (id: string) => void;
   onSurvey: () => void;
 }) {
@@ -37,17 +44,28 @@ export function CityInsights({
   const other =
     alternatives.find((r) => r.cityId === otherId) ?? alternatives[0];
   const habitat = HABITATS.find((h) => h.id === result?.habitat);
+  if (!demo && revealed && (loading || error))
+    return (
+      <aside
+        className="city-insights waiting-insights"
+        aria-label="City report"
+      >
+        {loading && <LoaderCircle className="spinner" size={20} />}
+        <h2>{error ? 'Reports could not load.' : 'Loading city reports…'}</h2>
+        <p>
+          {error
+            ? 'We could not retrieve the results. Please use Try again beside the globe.'
+            : 'We’re retrieving the published city reports.'}
+        </p>
+      </aside>
+    );
   if (!demo && !revealed)
     return (
       <aside className="city-insights waiting-insights">
         <span className="insight-kicker">
-          <LockKeyhole size={16} /> COMMUNITY RESULTS ARE CLOSED
+          <LockKeyhole size={16} /> Results open 12 September
         </span>
-        <h2>
-          What will your
-          <br />
-          <em>city reveal?</em>
-        </h2>
+        <h2>What the reports will show</h2>
         <p>
           We’ll combine anonymous survey answers into three city scores and the
           most selected way of meeting people.
@@ -61,7 +79,11 @@ export function CityInsights({
           A city needs 10 survey responses. Each score also needs 10 people who
           answered every question in that group. Some cities may not qualify.
         </p>
-        <button className="button primary" onClick={onSurvey}>
+        <button
+          className="button primary"
+          disabled={!canContribute}
+          onClick={onSurvey}
+        >
           Take the survey <ArrowUpRight size={17} />
         </button>
       </aside>
@@ -70,13 +92,11 @@ export function CityInsights({
     <aside className="city-insights" aria-label="City report">
       <div className={`insight-provenance ${demo ? 'example' : ''}`}>
         {demo
-          ? 'EXAMPLE REPORT · INVENTED DATA'
-          : 'COMMUNITY REPORT · VOLUNTARY SURVEY'}
+          ? 'Example data · invented responses'
+          : 'Community results · voluntary survey'}
       </div>
       <div className="insight-heading">
-        <span className="eyebrow">
-          {demo ? 'TRY READING A CITY REPORT' : 'READ THE CITY REPORT'}
-        </span>
+        <span className="eyebrow">Choose a city</span>
         <MapPin size={19} />
       </div>
       {data.length > 0 && (
@@ -96,18 +116,19 @@ export function CityInsights({
       )}
       {!result ? (
         <div className="insight-empty">
-          <h2>{city?.name ?? 'No city results yet'}</h2>
+          <h2>{city?.name ?? 'No published city reports'}</h2>
           <p>
             {demo
-              ? 'This city has no example data. You can still answer the real survey for it.'
-              : 'This city did not have enough complete responses to publish a report.'}
+              ? 'There is no example report for this city. Choose another city to explore.'
+              : city
+                ? 'This city had fewer than 10 survey responses. Its results stay private.'
+                : 'No city reached 10 survey responses. Smaller samples stay private.'}
           </p>
         </div>
       ) : (
         <>
           <p className="insight-sample">
-            {result.n}{' '}
-            {demo ? 'fictional example responses' : 'survey responses'} ·{' '}
+            {result.n} {demo ? 'example responses' : 'survey responses'} ·{' '}
             {city?.country}
           </p>
           <button
@@ -135,8 +156,7 @@ export function CityInsights({
                 ))}
               </NativeSelect>
               <p>
-                {other.n}{' '}
-                {demo ? 'fictional example responses' : 'survey responses'}.
+                {other.n} {demo ? 'example responses' : 'survey responses'}.
                 Different people, not a controlled comparison.
               </p>
             </div>
@@ -195,7 +215,6 @@ export function CityInsights({
             })}
           </div>
           <div className="meeting-insight">
-            <span aria-hidden="true">{habitat?.emoji ?? '🔒'}</span>
             <div>
               <b>
                 {habitat?.id === 'none'

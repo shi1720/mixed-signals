@@ -11,7 +11,7 @@ const ids = [
   'hope',
 ];
 async function startSurvey(page: Page) {
-  await expect(page.getByText(/SEASON 001 · COLLECTING/)).toBeVisible();
+  await expect(page.getByText(/September 2026 · Survey open/)).toBeVisible();
   await page
     .getByRole('button', { name: 'Take the 2-minute survey', exact: true })
     .click();
@@ -47,7 +47,7 @@ test('atlas is labeled, interactive, searchable and mobile-safe', async ({
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('/');
-  await expect(page.getByText(/SEASON 001 · COLLECTING/)).toBeVisible();
+  await expect(page.getByText(/September 2026 · Survey open/)).toBeVisible();
   await expect(
     page.getByRole('button', { name: 'Take the 2-minute survey', exact: true }),
   ).toBeInViewport({ ratio: 1 });
@@ -57,9 +57,7 @@ test('atlas is labeled, interactive, searchable and mobile-safe', async ({
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'in your city',
   );
-  await expect(
-    page.getByText('EXAMPLE · INVENTED DATA', { exact: true }),
-  ).toBeVisible();
+  await expect(page.locator('.demo-badge')).toBeVisible();
   await page.getByRole('tab', { name: 'Mixed messages', exact: true }).click();
   await expect(
     page.getByRole('tab', { name: 'Mixed messages', exact: true }),
@@ -77,9 +75,7 @@ test('atlas is labeled, interactive, searchable and mobile-safe', async ({
   await page
     .getByRole('textbox', { name: 'Search city reports' })
     .fill('Atlantis');
-  await expect(
-    page.getByText('No forecast at those coordinates.'),
-  ).toBeVisible();
+  await expect(page.getByText('No city matches your search.')).toBeVisible();
   await page
     .getByRole('button', { name: 'Clear filters', exact: true })
     .click();
@@ -105,7 +101,7 @@ test('collection state protects live results and calendar is real', async ({
   request,
 }) => {
   await page.goto('/');
-  await expect(page.getByText(/SEASON 001 · COLLECTING/)).toBeVisible();
+  await expect(page.getByText(/September 2026 · Survey open/)).toBeVisible();
   await page
     .getByRole('tab', { name: 'Community results', exact: true })
     .click();
@@ -155,7 +151,7 @@ test('a complete report persists, survives reload, and can be withdrawn', async 
     page.getByRole('heading', { name: /Your report is saved/ }),
   ).toBeVisible();
   await expect(
-    page.getByText('YOUR ANSWERS, SUMMED UP', { exact: true }),
+    page.getByText('Your private summary', { exact: true }),
   ).toBeVisible();
   const receipt = await page.evaluate(() =>
     JSON.parse(localStorage.getItem('mixed-signals:receipt:season-001')!),
@@ -189,7 +185,7 @@ test('validation and failed submission preserve answers for retry', async ({
   page,
 }) => {
   await page.goto('/');
-  await expect(page.getByText(/SEASON 001 · COLLECTING/)).toBeVisible();
+  await expect(page.getByText(/September 2026 · Survey open/)).toBeVisible();
   await page
     .getByRole('button', { name: 'Take the 2-minute survey', exact: true })
     .click();
@@ -224,13 +220,11 @@ test('validation and failed submission preserve answers for retry', async ({
   await page
     .getByRole('button', { name: 'Submit anonymous answers', exact: true })
     .click();
-  await expect(
-    page.getByText('LOCAL CORRESPONDENT · REPORT SAVED'),
-  ).toBeVisible();
+  await expect(page.getByText('Local correspondent')).toBeVisible();
 });
 test('keyboard dialog flow and WCAG automated checks', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByText(/SEASON 001 · COLLECTING/)).toBeVisible();
+  await expect(page.getByText(/September 2026 · Survey open/)).toBeVisible();
   const atlas = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
     .analyze();
@@ -272,9 +266,9 @@ test('unknown routes recover and reduced motion pauses the globe', async ({
     page.getByRole('button', { name: 'Rotate globe', exact: true }),
   ).toBeVisible();
   await page.goto('/not-a-real-place');
-  await expect(page.getByText('404 / WRONG COORDINATES')).toBeVisible();
+  await expect(page.getByText('404 · Page not found')).toBeVisible();
   await page
-    .getByRole('link', { name: 'Back to the atlas', exact: true })
+    .getByRole('link', { name: 'Back to Mixed Signals', exact: true })
     .click();
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'in your city',
@@ -309,9 +303,7 @@ test('a lost successful response can recover its private receipt after reload', 
   await page
     .getByRole('button', { name: 'Take the 2-minute survey', exact: true })
     .click();
-  await expect(
-    page.getByText('LOCAL CORRESPONDENT · REPORT SAVED'),
-  ).toBeVisible();
+  await expect(page.getByText('Local correspondent')).toBeVisible();
   expect(
     await page.evaluate(
       () =>
@@ -335,9 +327,7 @@ test('a saved receipt can be restored and used from a fresh browser', async ({
   await page
     .getByRole('button', { name: 'Submit anonymous answers', exact: true })
     .click();
-  await expect(
-    page.getByText('LOCAL CORRESPONDENT · REPORT SAVED'),
-  ).toBeVisible();
+  await expect(page.getByText('Local correspondent')).toBeVisible();
   const receipt = await page.evaluate(() =>
     localStorage.getItem('mixed-signals:receipt:season-001')!,
   );
@@ -345,7 +335,7 @@ test('a saved receipt can be restored and used from a fresh browser', async ({
   const fresh = await other.newPage();
   try {
     await fresh.goto('/');
-    await expect(fresh.getByText(/SEASON 001 · COLLECTING/)).toBeVisible();
+    await expect(fresh.getByText(/September 2026 · Survey open/)).toBeVisible();
     await fresh
       .getByRole('button', { name: 'My report & deletion', exact: true })
       .click();
@@ -403,9 +393,7 @@ test('an uncertain send preserves its original payload after edits', async ({
   await page
     .getByRole('button', { name: 'Submit anonymous answers', exact: true })
     .click();
-  await expect(
-    page.getByText('LOCAL CORRESPONDENT · REPORT SAVED'),
-  ).toBeVisible();
+  await expect(page.getByText('Local correspondent')).toBeVisible();
   expect(replay).toBe(original);
   const saved = await page.evaluate(() =>
     JSON.parse(localStorage.getItem('mixed-signals:receipt:season-001')!),
@@ -417,7 +405,7 @@ test('an unmatched receipt is kept and never falsely confirms deletion', async (
   page,
 }) => {
   await page.goto('/');
-  await expect(page.getByText(/SEASON 001 · COLLECTING/)).toBeVisible();
+  await expect(page.getByText(/September 2026 · Survey open/)).toBeVisible();
   await page
     .getByRole('button', { name: 'My report & deletion', exact: true })
     .click();
@@ -457,12 +445,12 @@ test('city reports explain all scores and compare the same dimensions', async ({
   page,
 }, testInfo) => {
   await page.goto('/');
-  await expect(page.getByText(/SEASON 001 · COLLECTING/)).toBeVisible();
+  await expect(page.getByText(/September 2026 · Survey open/)).toBeVisible();
   const report = page.getByRole('complementary', { name: 'City report' });
   await report
     .getByRole('combobox', { name: 'City report', exact: true })
     .selectOption('mumbai');
-  await expect(report).toContainText('EXAMPLE REPORT · INVENTED DATA');
+  await expect(report).toContainText('Example data · invented responses');
   for (const name of ['Connection', 'Mixed messages', 'Date hassles'])
     await expect(
       report.getByRole('heading', { name, exact: true }),
@@ -555,7 +543,7 @@ test('published community reports distinguish hidden scores from a future reveal
   );
   await page.goto('/?mode=live&city=london');
   const report = page.getByRole('complementary', { name: 'City report' });
-  await expect(report).toContainText('COMMUNITY REPORT · VOLUNTARY SURVEY');
+  await expect(report).toContainText('Community results · voluntary survey');
   await expect(report).toContainText(
     'Fewer than 10 complete responses. Score hidden.',
   );
@@ -574,7 +562,7 @@ test('the globe keeps a painted frame when resized offscreen', async ({
   page,
 }) => {
   await page.goto('/');
-  await expect(page.getByText(/SEASON 001 · COLLECTING/)).toBeVisible();
+  await expect(page.getByText(/September 2026 · Survey open/)).toBeVisible();
   const canvas = page.locator('canvas');
   const centerAlpha = () =>
     canvas.evaluate(
@@ -597,4 +585,246 @@ test('the globe keeps a painted frame when resized offscreen', async ({
   await expect.poll(centerAlpha).toBeGreaterThan(0);
   await canvas.scrollIntoViewIfNeeded();
   await expect.poll(centerAlpha).toBeGreaterThan(0);
+});
+
+// These presentation states stub the server phase. SQL tests separately enforce the real cutoff.
+test('loading and failed results never claim low participation; retries and filters stay truthful', async ({
+  page,
+}) => {
+  await page.route('**/api/status', async (route) => {
+    const data = await (await route.fetch()).json();
+    await route.fulfill({ json: { ...data, phase: 'revealed' } });
+  });
+  let finishLoading!: () => void;
+  const waiting = new Promise<void>((resolve) => {
+    finishLoading = resolve;
+  });
+  await page.route('**/api/results', async (route) => {
+    await waiting;
+    await route.fulfill({
+      status: 503,
+      json: { error: 'Results are temporarily unavailable.' },
+    });
+  });
+  await page.goto('/?mode=live&city=mumbai');
+  const report = page.getByRole('complementary', { name: 'City report' });
+  await expect(report).toContainText('Loading city reports');
+  await expect(page.locator('.map-city-card')).toHaveCount(0);
+  await expect(
+    page.getByText(/fewer than 10|No city reached|did not meet the minimum/i),
+  ).toHaveCount(0);
+  finishLoading();
+  await expect(report).toContainText('Reports could not load');
+  await expect(page.locator('.map-city-card')).toHaveCount(0);
+  await expect(
+    page.getByText(/fewer than 10|No city reached|did not meet the minimum/i),
+  ).toHaveCount(0);
+  await page.unroute('**/api/results');
+  await page.route('**/api/results', (route) =>
+    route.fulfill({
+      json: {
+        phase: 'revealed',
+        cities: [
+          {
+            cityId: 'london',
+            n: 12,
+            chemistry: { value: 60, n: 12 },
+            fog: { value: 50, n: 12 },
+            friction: { value: 40, n: 12 },
+            habitat: 'apps',
+            forecast: 'Scattered possibilities',
+          },
+        ],
+      },
+    }),
+  );
+  await page.getByRole('button', { name: 'Try again', exact: true }).click();
+  await expect(page.locator('.city-tile')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Asia', exact: true }).click();
+  await expect(page.locator('.empty-cities')).toContainText(
+    'No city matches your search.',
+  );
+  await expect(page.locator('.empty-cities')).not.toContainText(
+    'No city reached',
+  );
+});
+
+test('unknown and upcoming collection status cannot start a new response', async ({
+  page,
+}) => {
+  await page.route('**/api/status', (route) =>
+    route.fulfill({
+      status: 503,
+      json: { error: 'Collection status is unavailable.' },
+    }),
+  );
+  await page.goto('/');
+  await expect(page.getByRole('alert')).toContainText(
+    'Collection status is unavailable',
+  );
+  await expect(
+    page.getByRole('button', { name: 'Take the 2-minute survey', exact: true }),
+  ).toBeDisabled();
+  await page
+    .getByRole('button', { name: 'My report & deletion', exact: true })
+    .click();
+  await page
+    .getByRole('button', {
+      name: 'Check this browser for an interrupted submission',
+    })
+    .click();
+  await expect(page.getByRole('dialog')).toContainText(
+    'We could not confirm whether the survey is open.',
+  );
+  await expect(
+    page.getByRole('button', { name: 'Continue', exact: true }),
+  ).toBeDisabled();
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page.unroute('**/api/status');
+  await page.route('**/api/status', async (route) => {
+    const data = await (await route.fetch()).json();
+    await route.fulfill({ json: { ...data, phase: 'upcoming' } });
+  });
+  await page.reload();
+  await expect(
+    page.getByRole('button', { name: 'Survey opens 5 September', exact: true }),
+  ).toBeDisabled();
+});
+
+test('the deadline explains why an unfinished survey can no longer be submitted', async ({
+  page,
+}) => {
+  await page.clock.install();
+  let closed = false;
+  await page.route('**/api/status', async (route) => {
+    const data = await (await route.fetch()).json();
+    await route.fulfill({
+      json: { ...data, phase: closed ? 'revealed' : 'collecting' },
+    });
+  });
+  await page.goto('/');
+  await startSurvey(page);
+  await answerQuestions(page);
+  await page.getByRole('radio', { name: /The apps/ }).check();
+  await page
+    .getByRole('checkbox', { name: /I agree to anonymous city summaries/ })
+    .check();
+  closed = true;
+  await page.clock.fastForward(61000);
+  await expect(page.getByRole('dialog')).toContainText(
+    'The survey closed while you were answering.',
+  );
+  await expect(
+    page.getByRole('button', { name: 'Submit anonymous answers', exact: true }),
+  ).toBeDisabled();
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: 'Continue', exact: true }),
+  ).toBeDisabled();
+  await expect(page.getByRole('dialog')).toContainText(
+    'Your unsent answers remain in this tab.',
+  );
+});
+
+test('an interrupted successful submission can recover after the reveal and show current actions', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await startSurvey(page);
+  await answerQuestions(page);
+  await page.getByRole('radio', { name: /The apps/ }).check();
+  await page
+    .getByRole('checkbox', { name: /I agree to anonymous city summaries/ })
+    .check();
+  await page.route('**/api/signals', async (route) => {
+    const response = await route.fetch();
+    expect(response.status()).toBe(201);
+    await route.abort('failed');
+  });
+  await page
+    .getByRole('button', { name: 'Submit anonymous answers', exact: true })
+    .click();
+  await expect(page.getByRole('alert')).toBeVisible();
+  await page.unroute('**/api/signals');
+  for (const endpoint of ['status', 'session']) {
+    await page.route(`**/api/${endpoint}`, async (route) => {
+      const data = await (await route.fetch()).json();
+      await route.fulfill({ json: { ...data, phase: 'revealed' } });
+    });
+  }
+  await page.reload();
+  await expect(page.getByText('September 2026 · Results open')).toBeVisible();
+  await page
+    .getByRole('button', { name: 'My report & deletion', exact: true })
+    .click();
+  await page
+    .getByRole('button', {
+      name: 'Check this browser for an interrupted submission',
+    })
+    .click();
+  await expect(
+    page.getByRole('heading', { name: 'Your report is saved.', exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole('dialog')).toContainText(
+    'Community results are now open.',
+  );
+  await expect(
+    page.getByRole('dialog').getByRole('link', { name: /calendar/i }),
+  ).toHaveCount(0);
+  await expect(
+    page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Explore community results', exact: true }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'View my saved report', exact: true })
+    .click();
+  await expect(
+    page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Explore community results', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('dialog').getByRole('link', { name: /calendar/i }),
+  ).toHaveCount(0);
+});
+
+test('200 percent text stays readable and the city picker and survey remain operable', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect(page.getByText('September 2026 · Survey open')).toBeVisible();
+  await page.evaluate(() => {
+    document.documentElement.style.fontSize = '32px';
+  });
+  const sizes = await page.evaluate(() => ({
+    width: innerWidth,
+    scroll: document.documentElement.scrollWidth,
+    paragraph: parseFloat(
+      getComputedStyle(document.querySelector('.opening-copy > p:last-child')!)
+        .fontSize,
+    ),
+  }));
+  expect(sizes.paragraph).toBeGreaterThanOrEqual(32);
+  expect(sizes.scroll).toBeLessThanOrEqual(sizes.width + 1);
+  await page
+    .getByRole('button', { name: 'Take the 2-minute survey', exact: true })
+    .click();
+  await page.getByRole('combobox', { name: 'Your city' }).fill('London');
+  await page.getByRole('option', { name: /London/ }).click();
+  await page.getByRole('checkbox', { name: /I am 18 or older/ }).check();
+  await page
+    .getByRole('checkbox', { name: /I have dating experience/ })
+    .check();
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await page.locator('label[for="followThrough-4"]').click();
+  await expect(page.locator('#followThrough-4')).toBeChecked();
+  const next = page.getByRole('button', { name: 'Continue', exact: true });
+  await next.scrollIntoViewIfNeeded();
+  await expect(next).toBeInViewport({ ratio: 1 });
+  await next.click();
+  await expect(
+    page.getByRole('heading', { name: 'Date costs & clear intentions.' }),
+  ).toBeVisible();
 });

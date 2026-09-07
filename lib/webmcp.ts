@@ -37,7 +37,7 @@ export function registerAtlasTools(actions: {
       name: 'select_atlas_city',
       title: 'Explore an atlas city',
       description:
-        'Select a known city in the visible atlas. This changes the view, not survey answers. Preview remains explicitly illustrative.',
+        'Select a known city in the visible atlas. This changes the view, not survey answers. Example data stays clearly labeled.',
       inputSchema: {
         type: 'object',
         properties: { cityId: { type: 'string' } },

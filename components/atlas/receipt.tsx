@@ -15,7 +15,14 @@ import {
   AlertDialogAction,
   AlertDialogFooter,
 } from '@/components/ui/alert-dialog';
-import { CalendarPlus, Download, Trash2, Upload, Check } from 'lucide-react';
+import {
+  ArrowRight,
+  CalendarPlus,
+  Download,
+  Trash2,
+  Upload,
+  Check,
+} from 'lucide-react';
 import {
   type Receipt,
   RECEIPT_KEY,
@@ -30,11 +37,17 @@ export function ReceiptDialog({
   open,
   onClose,
   receipt,
+  revealed,
+  onExplore,
+  onRecover,
   onChange,
 }: {
   open: boolean;
   onClose: () => void;
   receipt: Receipt | null;
+  revealed: boolean;
+  onExplore: () => void;
+  onRecover: () => void;
   onChange: (receipt: Receipt | null) => void;
 }) {
   const [confirm, setConfirm] = useState(false),
@@ -99,9 +112,15 @@ export function ReceiptDialog({
                 RESPONSE
               </span>
               <PersonalSummary receipt={receipt} />
-              <a href="/api/reminder" className="button primary">
-                <CalendarPlus size={18} /> Add reveal to calendar
-              </a>
+              {revealed ? (
+                <button className="button primary" onClick={onExplore}>
+                  Explore community results <ArrowRight size={18} />
+                </button>
+              ) : (
+                <a href="/api/reminder" className="button primary">
+                  <CalendarPlus size={18} /> Add reveal to calendar
+                </a>
+              )}
               <button
                 className="button outline"
                 onClick={() =>
@@ -137,6 +156,9 @@ export function ReceiptDialog({
                 No receipt on this device. If you saved one earlier, restore it
                 below. The file is read locally and never uploaded.
               </p>
+              <button className="text-link" onClick={onRecover}>
+                Check this browser for an interrupted submission
+              </button>
               <input
                 ref={file}
                 type="file"
@@ -155,7 +177,7 @@ export function ReceiptDialog({
                     );
                     if (!parsed.success)
                       throw new Error(
-                        'That is not a valid receipt for this season.',
+                        'That is not a valid receipt for this survey.',
                       );
                     storeReceipt(parsed.data);
                     onChange(parsed.data);
