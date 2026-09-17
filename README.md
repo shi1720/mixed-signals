@@ -6,7 +6,7 @@
 
 **An anonymous city dating survey, with useful context and a sense of humor.**
 
-[Explore the live atlas](https://mixed-signals-atlas.sg127977958.chatgpt.site) · [Architecture](docs/ARCHITECTURE.md) · [Run locally](#run-locally) · [Engineering evaluation lab](evals/README.md)
+[Explore the live atlas](https://mixed-signals.web.app) · [Architecture](docs/ARCHITECTURE.md) · [Run locally](#run-locally) · [Engineering evaluation lab](evals/README.md)
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square) ![Cloudflare](https://img.shields.io/badge/Cloudflare-Workers%20%2B%20D1-F38020?style=flat-square) ![License](https://img.shields.io/badge/License-MIT-D6FB52?style=flat-square)
 
@@ -128,3 +128,7 @@ Geography: [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/)
 Created by [Shivam Gupta](https://github.com/shi1720), with AI-assisted implementation and independent agent reviews. No fabricated users, traffic, employment history, or performance claims.
 
 [MIT licensed](LICENSE). Contributions welcome. Please do not submit fabricated survey responses to the public site.
+
+## Firebase deployment
+
+See [Firebase deployment and verification](docs/FIREBASE.md) for the production architecture, commands, and migration considerations.

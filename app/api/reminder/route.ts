@@ -2,7 +2,7 @@ import { calendarEvent } from '@/lib/calendar';
 // Fixed public origin prevents Host-header injection into calendar links.
 export function GET() {
   return new Response(
-    calendarEvent('https://mixed-signals-atlas.sg127977958.chatgpt.site'),
+    calendarEvent('https://mixed-signals.web.app'),
     {
       headers: {
         'Content-Type': 'text/calendar; charset=utf-8',

@@ -63,3 +63,6 @@ __pycache__/
 htmlcov/
 node_modules/
 *.log
+
+/.firebase/
+/dist-firebase/

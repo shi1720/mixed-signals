@@ -16,13 +16,16 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "db:migrate": "wrangler d1 migrations apply DB --local --config wrangler.local.json",
-    "check": "npm run typecheck && npm run lint && npm test",
+    "check": "npm run typecheck && npm run lint && npm test && npm run test:gateway",
     "test:e2e": "playwright test",
     "globe:generate": "node scripts/generate-globe.mjs",
     "test:python": "python3 -m unittest discover -s tests/python -v",
     "eval:verify": "python3 evals/run.py",
     "eval:export": "python3 evals/export.py",
-    "check:all": "npm run check && npm run test:python && npm run eval:verify"
+    "check:all": "npm run check && npm run test:python && npm run eval:verify",
+    "build:firebase": "vite build --config vite.firebase.config.ts",
+    "test:gateway": "node --test firebase/gateway/gateway.test.mjs",
+    "test:e2e:firebase": "FIREBASE_E2E=1 playwright test"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
