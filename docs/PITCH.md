@@ -51,4 +51,4 @@ A planet-sized dating experiment. Built an interactive geographic atlas and anon
 
 **Stack:** TypeScript, React, Canvas, Cloudflare Workers, SQLite/D1, Python.
 
-**Links:** [Live app](https://mixed-signals-atlas.sg127977958.chatgpt.site) · [GitHub](https://github.com/shi1720/mixed-signals)
+**Links:** [Live app](https://mixed-signals.web.app) · [GitHub](https://github.com/shi1720/mixed-signals)

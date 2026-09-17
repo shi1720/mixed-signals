@@ -1,0 +1,48 @@
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+test('Firebase atlas preserves examples, real results, sharing and accessible layout', async ({ page }, testInfo) => {
+  const errors: string[] = [];
+  const legacy: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => { if (request.url().includes('chatgpt.site')) legacy.push(request.url()); });
+  await page.goto('/');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('in your city');
+  await expect(page.locator('.demo-badge')).toBeVisible();
+  await page.getByRole('tab', { name: 'Mixed messages', exact: true }).click();
+  await page.getByRole('textbox', { name: 'Search city reports' }).fill('Mumbai');
+  await expect(page.locator('.city-tile')).toHaveCount(1);
+  await page.locator('.city-tile').click();
+  await expect(page.locator('.map-city-card')).toContainText('Mumbai');
+  await expect(page.locator('.map-city-card')).toContainText('Invented example');
+  await expect(page).toHaveURL(/city=mumbai/);
+  await expect(page.locator('body')).not.toContainText('chatgpt.site');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  const results = await page.request.get('/api/results');
+  expect(results.status()).toBe(200);
+  expect((await results.json()).phase).toBe('revealed');
+  const calendar = await page.request.get('/api/reminder');
+  expect(await calendar.text()).toContain('URL:https://mixed-signals.web.app');
+  expect(await calendar.text()).not.toContain('chatgpt.site');
+  await page.screenshot({ path: `/tmp/mixed-signals-firebase-${testInfo.project.name}.png`, fullPage: true });
+  const audit = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+  expect(audit.violations.map(v => v.id)).toEqual([]);
+  expect(errors).toEqual([]);
+  expect(legacy).toEqual([]);
+});
+test('Firebase forwards a stable private session without caching it', async ({ request }) => {
+  const first = await request.get('/api/session');
+  expect(first.status()).toBe(200);
+  const firstCookie = first.headers()['set-cookie'];
+  expect(firstCookie).toMatch(/__session=[a-f0-9]{64}/);
+  expect(firstCookie).toContain('HttpOnly'); expect(firstCookie).toContain('Secure');
+  expect(first.headers()['cache-control']).toContain('no-store');
+  const second = await request.get('/api/session');
+  expect(second.headers()['set-cookie']).toBe(firstCookie);
+});
+test('unknown paths retain a useful 404 and safe route home', async ({ page }) => {
+  const response = await page.goto('/not-a-real-place');
+  expect(response?.status()).toBe(404);
+  await expect(page.getByText('404 · Page not found')).toBeVisible();
+  await page.getByRole('link', { name: 'Back to Mixed Signals' }).click();
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('in your city');
+});

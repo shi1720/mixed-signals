@@ -28,10 +28,12 @@ const excluded = new Set([
   '__pycache__',
 ]);
 let child;
+let firebaseServer;
 let stopping = false;
 async function stop(code = 0) {
   if (stopping) return;
   stopping = true;
+  firebaseServer?.kill('SIGTERM');
   if (child && child.exitCode === null) {
     const exited = new Promise((resolveExit) =>
       child.once('exit', resolveExit),
@@ -95,6 +97,10 @@ try {
     join(temporary, '.wrangler/state'),
   ]);
   await run('vinext/dist/cli.js', ['build']);
+  if (process.env.FIREBASE_E2E === '1') {
+    await run('vite/bin/vite.js', ['build', '--config', 'vite.firebase.config.ts']);
+    firebaseServer = spawn(process.execPath, ['scripts/firebase-static-server.mjs'], { cwd: temporary, stdio: 'inherit' });
+  }
   await run('wrangler/bin/wrangler.js', [
     'dev',
     '--config',
@@ -102,7 +108,7 @@ try {
     '--ip',
     '127.0.0.1',
     '--port',
-    '3107',
+    process.env.FIREBASE_E2E === '1' ? '3108' : '3107',
     '--persist-to',
     join(temporary, '.wrangler/state'),
   ]);

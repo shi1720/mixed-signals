@@ -2,9 +2,9 @@
 
 ## Reference deployment
 
-The reference site is [Mixed Signals](https://mixed-signals-atlas.sg127977958.chatgpt.site), backed by a Cloudflare Worker and D1 database provisioned through Sites. The site source and migration definitions are public. Private records and local SQLite files are not in Git or the deployment archive.
+The reference site is [Mixed Signals](https://mixed-signals.web.app), served by Firebase Hosting with a Cloud Run API gateway to the retained Cloudflare Worker and D1 database. See [Firebase deployment](FIREBASE.md) for the current production path and migration limits. The site source and migration definitions are public. Private records and local SQLite files are not in Git or the deployment archive.
 
-`.openai/hosting.json` identifies the reference Site. Forking the repository does not grant control of that Site. Do not reuse its `project_id` when creating your own Site. For an independent deployment, follow the Cloudflare path below or register a separate Site in your own account.
+`.openai/hosting.json` preserves the legacy backend deployment identifier. Forking the repository does not grant control of that Site. Do not reuse its `project_id` when creating your own Site. For an independent deployment, follow the Cloudflare path below or register a separate Site in your own account.
 
 No OpenAI API key, map token, Firestore project, email account, or other application secret is required. The rate-limit salt is generated once inside the database. It never reaches the browser.
 
